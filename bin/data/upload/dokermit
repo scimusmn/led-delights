@@ -1,0 +1,84 @@
+#!/opt/local/bin/kermit +
+
+if defined \$(XBEEDEV) {
+  assign LINE \$(XBEEDEV)
+} else {
+  if exist /dev/cu.usbserial-A6004o8Y {
+    assign LINE /dev/cu.usbserial-A6004o8Y
+  } else if exist /dev/cu.usbserial-DIQABGOR {
+    assign LINE /dev/cu.usbserial-DIQABGOR
+  } else if exist /dev/cu.usbserial-DIQ6VMBT {
+    assign LINE /dev/cu.usbserial-DIQ6VMBT
+  } else {
+    echo "Can't find a serial port to use."
+    exit 1
+  }
+}
+
+if defined \$(XBEESPEED) {
+  assign SPEED \$(XBEESPEED)
+} else {
+  assign SPEED 230400
+}
+
+if defined \%1 {
+  if not exist \%1 {
+    end 1 "Can't find file \%1"
+  } else {
+    assign FILETOSEND \%1
+  }
+} 
+
+if defined \%2 {
+  assign FLASHOFFSET \%2
+} else {
+  assign FLASHOFFSET 0l
+}
+
+set line \m(LINE)
+set speed \m(SPEED) 
+set carrier-watch off
+set protocol xmodem
+set terminal cr-display crlf
+
+## \v(status) equals return code from program after a redirect.
+##    if program returns non-zero (i.e. in unix-speak returns an error)
+##    then kermit interprets that as 'true' in an if statement.
+
+if defined \m(FILETOSEND) {
+  local rc i done
+
+  #echo "Setting flash offset to \m(FLASHOFFSET)..."
+  #redirect ./cmdseq.pl - set_data_offset \m(FLASHOFFSET)
+  
+  xecho {Sending xmodem command to wheel, awaiting response: }
+  
+  set input echo off
+  for i 1 6 1 {
+    redirect ./cmdseq.pl -q - xmodem_upload \m(FLASHOFFSET)
+
+    input 1 \fpattern(*C)
+    if success {
+      echo {OK} 
+      echo {Starting file transfer...}
+
+      redirect /opt/local/bin/sx -k \m(FILETOSEND)
+      assign rc \v(status)
+
+      if \m(rc) {
+        exit 1 "Transfer failed."
+      } else {
+        # sx already says "Transfer complete." Don't say again
+        exit 0
+      }
+    } else {
+      xecho "."
+    }
+  }
+
+  exit 1 {Unable to start transfer, no response from wheel.}
+}
+
+
+
+

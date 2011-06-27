@@ -1,0 +1,413 @@
+#!/usr/bin/perl
+
+use strict;
+use Config;
+use lib '/opt/local/lib/perl5/site_perl/5.8.9/darwin-2level/Image/Magick.pm';
+
+my($perlcmd) = $Config{perlpath};  # same perl used to run this
+my($ddcmd) = "dd";
+my($catcmd) = "cat";
+my($convcmd) = "convert";  # imagemagick
+my($ffmpegcmd) = "ffmpeg";
+if($ENV{OS} =~ /^windows/i) {
+  $ddcmd = "/cygwin/bin/dd";
+  $catcmd = "/cygwin/bin/cat";
+}
+
+my($PROGRAMDIR, $PROGRAMFILE);  # dir/file executed by user
+BEGIN {
+    ($PROGRAMDIR = $0) =~ s/([^\/]+)$//;
+    $PROGRAMFILE = $1;
+    if($PROGRAMDIR eq "") {$PROGRAMDIR = "."}
+
+    push(@INC, $PROGRAMDIR);
+}
+
+my($ENCODEIMAGE) = "$perlcmd $PROGRAMDIR/encode-image.pl --vidpro7 --colormap $PROGRAMDIR/colormap_332.gif";
+
+sub usage {
+    print STDERR "Usage: $0 <outfile> <input dir> <playlist>\n";
+    print STDERR "$0 generates a control script and wad of data\n";
+    print STDERR "for uploading to the wheel.\n";
+    print STDERR "output files: <outfile>.script and <outfile>.wad\n";
+    print STDERR "<input dir>: where the input image and animation files are.\n";
+    print STDERR "   encoded versions of the files will be written to this directory.\n";
+    print STDERR "<playlist>: playlist file for the input graphics\n";
+    exit(1);
+};
+
+&usage unless @ARGV;
+my($outfilebase) = shift @ARGV;
+my($imgdir) = shift @ARGV;
+unless(-e $imgdir) {
+  usage();
+}
+my($playlist) = shift @ARGV;
+# my($setarg) = shift @ARGV;
+
+my($script_file) = "$outfilebase.script";
+my($wad_file) = "$outfilebase.wad";
+print("creating $script_file and $wad_file\n\n");
+
+my($vidpromemsize) = (1024*1024*4*2);
+my($framesize) = 8192;
+my($scriptblocks) = 1;
+my($scriptsize) = $framesize * $scriptblocks;  # increase for lots of animation looping
+my($firstpic) = 1;
+my (@wadmanifest);
+my (@cmds);
+my (%location);  # flash location of each item
+my($currentpal);
+my($mirrorstate) = -1;
+my($dimstate) = -1;
+my $flashptr = $scriptsize;
+my($playlist_id) = -1;
+my(%playlist_ids);
+my($playlist_count) = 0;
+
+#&set_colortable("332med");
+#push (@cmds, "pattern", "/image");
+
+# get the file age for all files in the input dir (potential input and output files)
+  opendir(INDIR, $imgdir) || die("-E- couldn't read $imgdir");
+  my(@filelist) = readdir(INDIR);
+  closedir(INDIR);
+  my(%fileages);
+  my($filename);
+  foreach $filename (sort(@filelist)) {
+  	$fileages{$filename} = -M "$imgdir/$filename";
+  }
+
+# read the playlist and encode the files
+my($line);
+open(PL, $playlist) || die("-E- playlist not found: $playlist");
+foreach $line (<PL>) {
+	chomp($line);
+	$line =~ s/\#.*$//;  # strip comments
+	if($line =~ /^\s*$/) {
+		next;
+	}
+	
+	my($mtype, $infn, $pal, $time, $fnbase, $loops, $dim, $pat);
+	$loops = 1;
+	$dim = 1;
+	$time = 1;
+	$pat = "";
+	$pal = "332high";
+	if($line =~ /^\s*(picture1l)\s+(\S+)\s+(\d+)\s+(\d+\.*\d*)/) {
+		($mtype, $infn, $dim, $time) = ($1, $2, $3, $4);
+	} elsif($line =~ /^\s*(picture1r)\s+(\S+)\s+(\d+)\s+(\d+\.*\d*)/) {
+		($mtype, $infn, $dim, $time) = ($1, $2, $3, $4);
+	} elsif($line =~ /^\s*(picture2)\s+(\S+)\s+(\d+)\s+(\d+\.*\d*)/) {
+		($mtype, $infn, $dim, $time) = ($1, $2, $3, $4);
+	} elsif($line =~ /^\s*(animation1l)\s+(\S+)\s+(\d+)\s+(\d+\.*\d*)\s+(\d+\.*\d*)/) {
+		($mtype, $infn, $dim, $time, $loops) = ($1, $2, $3, $4, $5);
+	} elsif($line =~ /^\s*(animation1r)\s+(\S+)\s+(\d+)\s+(\d+\.*\d*)\s+(\d+\.*\d*)/) {
+		($mtype, $infn, $dim, $time, $loops) = ($1, $2, $3, $4, $5);
+	} elsif($line =~ /^\s*(pattern)\s+(\S+)/) {
+		($mtype, $pat) = ($1, $2);
+	} elsif($line =~ /^\s*(animation2)\s+(\S+)\s+(\d+)\s+(\d+\.*\d*)\s+(\d+\.*\d*)/) {
+		($mtype, $infn, $dim, $time, $loops) = ($1, $2, $3, $4, $5);
+        } elsif($line =~ /^\s*(script_blocks)\s+(\d+)/) {
+                # this command must be made before any pictures or animations!!
+                 $scriptblocks = $2;
+                 if($scriptblocks < 1 || $scriptblocks > 64) {
+                   die("-E- script_blocks must be 1..64");
+                 }
+                 $scriptsize = $framesize * $scriptblocks;
+		 $flashptr = $scriptsize;
+		print("script size: $scriptsize\n");
+                 next;
+#	} elsif($line =~ /^\s*(playlist)\s+(\d+)/) {
+#		$playlist_id = $2;
+#		$playlist_ids{$playlist_id} = 1;
+#		$playlist_count++;
+#		print("playlist id: $playlist_id\n");
+#		next;
+	} else {
+		die("-E- bad command syntax: '$line'");
+	}
+	
+	my($fnbase, $fnext);
+	if($infn =~ /^(.+)\.(\S+)$/) {
+		$fnbase = $1;
+		$fnext = $2;
+		if($fnext =~ /^(gif|jpg|jpeg|png)$/i) {
+			# native format - no conversion needed
+		} else {
+			if($mtype =~ /picture/) {
+				if(exists($fileages{"$fnbase.jpg"}) && ($fileages{"$fnbase.jpg"} < $fileages{$infn})) {
+					print("already converted: $infn to $fnbase.jpg\n");
+				} else {
+					my($cmd) = "$convcmd $infn $fnbase.jpg";
+					print("converting picture format: '$cmd'\n");
+					system("$cmd");
+					$? && die("-E- failure converting");
+				}
+				$infn = "$fnbase.jpg";
+  				$fileages{$infn} = -M "$imgdir/$infn";
+			}
+			if($mtype =~ /animation/) {
+				if(exists($fileages{"$fnbase.gif"}) && ($fileages{"$fnbase.gif"} < $fileages{$infn})) {
+					print("already converted: $infn to $fnbase.gif\n");
+				} else {
+					my($cmd) = "$ffmpegcmd -y -i $infn -r 15 -pix_fmt rgb24 $fnbase.gif";
+					print("converting animation format: '$cmd'\n");
+					system("$cmd");
+					$? && die("-E- failure converting");
+				}
+				$infn = "$fnbase.gif";
+  				$fileages{$infn} = -M "$imgdir/$infn";
+			}
+		}
+	} elsif($mtype eq "pattern"){
+	}
+	else {
+		die("-E- invalid file name/type: '$infn'");
+	}
+
+	my($outfn) = "$fnbase.img";
+	unless((exists($fileages{$infn})) || ($mtype eq "pattern")) {
+		print("$infn\n");
+		die("-E- input file not found: $infn");
+	}
+	if((exists($fileages{$outfn}) && ($fileages{$outfn} < $fileages{$infn}))) {
+		print("$infn already encoded to $outfn\n");
+	} elsif(($mtype eq "pattern")){
+	} else {
+		print("encoding $infn to $outfn\n");
+		# output file doesnt exist, or is out of date
+		unlink("$imgdir/$outfn");
+		my($cmd) = "$ENCODEIMAGE $imgdir/$infn $imgdir/$outfn";
+		print("running '$cmd'\n");
+		system("$cmd");
+		$? && die("-E- failure encoding");
+	}
+
+	if(($time < 0) || ($time >= 1000)) {
+          die("-E- 'time' setting must be between 0.0 and 999.9: '$line'");
+        }
+	if(($dim < 1) || ($dim > 5)) {
+	  die("-E- 'brightness' setting must be between 1 and 5: '$line'");
+	}
+	if(($loops < 1) || ($loops > 1000)) {
+	  die("-E- 'loops' setting must be between 1 and 1000: '$line'");
+	}
+
+	if($mtype eq "picture1l") {
+		&picture($fnbase, $pal, $time, 0x0, $dim);
+	}
+	if($mtype eq "picture1r") {
+		&picture($fnbase, $pal, $time, 0x2, $dim);
+	}
+	if($mtype eq "picture2") {
+		&picture($fnbase, $pal, $time, 0x1, $dim);
+	}
+	if($mtype eq "animation1l") {
+		&animation($fnbase, $time, $pal, $loops, 0x0, $dim);
+	}
+	if($mtype eq "animation1r") {
+		&animation($fnbase, $time, $pal, $loops, 0x2, $dim);
+	}
+	if($mtype eq "animation2") {
+		&animation($fnbase, $time, $pal, $loops, 0x1, $dim);
+	}
+	if($mtype eq "pattern") {
+		&pattern($pat);
+	}
+		
+	print("\n");
+}
+close(PL);
+
+# example of how a playlist can be encoded directly in perl
+if (0) {
+	&animation("rotate_3", 0.1, "332med", 4);
+    &animation("rotate_2", 0.1, "332med", 4);
+    &animation("rotate_1", 0.1, "332med", 4);
+    &picture("green_eye", "332med", 3);
+    &picture("biohazard", "332med", 2);
+    &animation("catrun", 0.1, "332low", 4);
+    &picture("peace", "332low", 3);
+    &animation("dna", 0.1, "332high", 4);
+    &animation("large-spinning-globe1", 0.1, "332med", 2);
+    &animation("ecg", 0.15, "332med", 6);
+    &animation("explosion", 0.05, "332high", 1);  
+}
+
+push (@cmds, "input_flash", "0l");
+
+print("wad manifest:\n");
+foreach $line (@wadmanifest) {
+    print "$line\n";
+}
+print "\n";
+print("encoding script and wad:\n");
+
+unlink("${script_file}.tmp");
+#print(@cmds);
+my($out);
+$out = system($perlcmd, "$PROGRAMDIR/cmdseq.pl", "${script_file}.tmp", @cmds);
+#print($out);
+$? && die("-E- failure running $perlcmd");
+## make sure script file is as big as we want it to be.
+my($cmds_size) = -s "${script_file}.tmp";
+my($cmds_size_pct) = int(100 * ($cmds_size / $scriptsize));
+print("command script use: $cmds_size_pct%\n");
+if($cmds_size > $scriptsize) {
+  die("-E- must increase script_blocks setting");
+}
+system($ddcmd, "if=${script_file}.tmp", "of=${script_file}", "bs=$scriptsize", "conv=sync", "count=1");
+$? && die("-E- failure running $ddcmd");
+unlink("${script_file}.tmp");
+print("created $script_file\n");
+
+if (defined($wad_file)) {
+    system "$catcmd $script_file @wadmanifest >  $wad_file";
+    my($wadsize) = -s $wad_file;
+    my($pct) = int(100 * $wadsize / $vidpromemsize);
+	print("created $wad_file: $wadsize bytes (vidpro7 memory: $pct% used)\n");    
+}
+
+sub picture() {
+    my($picname, $pal, $delay, $mirror, $dim) = @_;
+
+    if (defined($pal)) {
+        &set_colortable($pal);
+        $currentpal = $pal;
+    }
+
+    print "Showing picture $picname, pal $currentpal, delay $delay, mirror $mirror, brightness $dim\n";
+
+    #system("make ${imgdir}/${picname}.img");
+    if ( ! -f "$imgdir/${picname}.img" ) {
+        die "-E- Can't find picture file $imgdir/${picname}.img\n";
+    } elsif (! exists $location{$picname}) {  # first time we've seen this
+        push (@wadmanifest, "$imgdir/${picname}.img");
+        $location{$picname} = $flashptr;
+        $flashptr += -s "$imgdir/${picname}.img";
+    }
+
+    push (@cmds, "set_data_offset", "$location{$picname}l");
+
+    if ($firstpic) {
+        push (@cmds, "pattern_select", "/image2s");
+        push (@cmds, "unblank_display");
+        $firstpic = 0;
+    }
+
+    if($mirrorstate != $mirror) {
+	push (@cmds, "set_mirror", $mirror);
+        $mirrorstate = $mirror;
+    }
+
+    if($dimstate != $dim) {
+        push(@cmds, "set_dimlevel", $dim - 1);
+        $dimstate = $dim;
+    }
+
+    &waitsecs($delay);
+
+}
+
+sub animation() {
+    my($animname, $delay, $pal, $loops, $mirror, $dim) = @_;
+
+    print "Showing anim $animname, pal $pal, delay $delay, loops $loops, mirror $mirror, brightness $dim\n";
+
+    &set_colortable($pal);
+
+    #system("make ${imgdir}/${animname}.img");
+    if ( ! -f "$imgdir/${animname}.img" ) {
+        die "-E- Can't find animation file $imgdir/${animname}.img\n";
+
+    } elsif (! exists $location{$animname}) {  # first time we've seen this
+        push (@wadmanifest, "$imgdir/${animname}.img");
+        $location{$animname} = $flashptr;
+        $flashptr += -s "$imgdir/${animname}.img";
+    }
+
+    my($frames) = int(( -s "$imgdir/${animname}.img") / $framesize);
+
+    for (my($j)=0; $j < $loops; $j++) {
+        for (my($i)=0; $i < $frames; $i++) {
+            my($offset) = $location{$animname} + $i * $framesize;
+            push (@cmds, "set_data_offset", "${offset}l");
+            if ($firstpic) {
+                push (@cmds, "pattern_select", "/image2s");
+                $firstpic = 0;
+            }
+	    if($mirrorstate != $mirror) {
+		push (@cmds, "set_mirror", $mirror);
+	        $mirrorstate = $mirror;
+	    }
+	    if($dimstate != $dim) {
+	        push(@cmds, "set_dimlevel", $dim - 1);
+	        $dimstate = $dim;
+	    }
+            &waitsecs($delay); 
+        }
+    }
+}
+
+sub pattern() {
+    my($pat) = @_;
+	
+    print "Showing pattern $pat\n";
+	
+	&set_colortable("DEFAULT");
+    
+	if ($firstpic) {
+		push (@cmds, "pattern_select", $pat);
+		push (@cmds, "unblank_display");
+		push (@cmds, "set_mirror", 0x0);
+		push(@cmds, "set_dimlevel", 3);
+		#$firstpic = 0;
+	} 
+}
+
+sub animationrevs {
+    my($animname) = @_;
+    
+    if ( ! -f "$imgdir/${animname}.img" ) {
+        die "Can't find animation file $imgdir/${animname}.img\n";
+    } elsif (! exists $location{$animname}) {  # first time we've seen this
+        push (@wadmanifest, "$imgdir/${animname}.img");
+        $location{$animname} = $flashptr;
+        $flashptr += -s "$imgdir/${animname}.img";
+    }
+
+    my($frames) = int(( -s "$imgdir/${animname}.img") / $framesize);
+
+    my($i);
+    for ($i=0; $i < $frames; $i++) {
+        my($offset) = $location{$animname} + $i * $framesize;
+        push (@cmds, "set_data_offset", "${offset}l");
+        push (@cmds, "waitrevs",2); 
+    }
+}
+
+sub waitsecs {
+    my($secs) = @_;
+    my($csecs) = int($secs * 100 + 0.5);
+
+    while ($csecs > 255) {
+        push(@cmds, "waitcsecs", 255);
+        $csecs -= 255;
+    }
+
+    if ($csecs < 1) {
+        $csecs = 1;
+    }
+    
+    push(@cmds, "waitcsecs", $csecs);
+
+}
+
+sub set_colortable {
+    my($pal) = @_;
+    if ($currentpal ne $pal) {
+        $currentpal = $pal;
+        push (@cmds, "set_colortable", $pal);
+    }
+}
