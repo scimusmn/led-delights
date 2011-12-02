@@ -34,7 +34,7 @@ void testApp::setup(){
 	if(preDef.size()>4) preDef.setSelected(2);
 	preDef.setPos(20, 20, 70, ofGetHeight()-40);
 	
-	arial.loadFont("Arial.ttf");
+	arial.loadFont("fonts/DinC.ttf");
 	arial.setSize(12);
 	
 	drawing=false;
@@ -63,15 +63,11 @@ void testApp::setup(){
 	
 	fillButton.setTitle("fill screen");
 	fillButton.setTextSize(12);
-	
-	group.newImage("upload/images/0.jpg", false);
-	group.newImage("upload/images/1.jpg", false);
-	group.newImage("upload/images/2.jpg", false);
-	group.newImage("upload/images/3.jpg", false);
-	group.newImage("upload/images/4.jpg", false);
-	group.newImage("upload/images/5.jpg", false);
-	group.newImage("upload/images/6.jpg", false);
-	group.newImage("upload/images/7.jpg", false);
+  
+  for (int i=0; i<7; i++) {
+    group.newImage("upload/images/"+ofToString(i)+".jpg", false);
+  }
+  
 	if(group.size()) group.setSelected(0);
 	group.setPos(20, 20, 70, ofGetHeight()-40);
 	sizes.setup(6, 5, 50);
@@ -94,6 +90,8 @@ void testApp::setup(){
 		group[i].image.setCompression(OF_COMPRESS_NONE);
 	}
 	
+  area.setup();
+  title.loadFont("fonts/DinC.ttf",40);
 }
 
 //--------------------------------------------------------------
@@ -102,9 +100,6 @@ void testApp::update(){
 	redoButton.setAvailable(group.redoAvailable());
 	if (uploadButton.pressed()) {
 		upload();
-	}
-	if (systemCall.isRunning()) {
-		spinner.spin();
 	}
 	if(timeout.justExpired()){
 		drawBut.clickUp();
@@ -124,38 +119,12 @@ void testApp::drawPredef()
 
 void testApp::drawEdit()
 {
-	int imageSize=ofGetHeight()-bottomBarH;
-	
-	ofVector relCursorPos(mouseX-ofGetWidth()/2,mouseY-imageSize/2);
-	group.display((ofGetWidth()-imageSize)/2, 0, imageSize, imageSize);
-	
-	if(drawing) {
-		ofSetColor(currentColor);
-		ofCircle(mouseX, mouseY, currentSize);
-		ofPoint curPoint(mouseX,mouseY);
-		ofVector inv=(ofVector(curPoint-prevPoint).unit()).ortho()*currentSize;
-		ofBeginShape();
-		ofVertex(curPoint+inv);
-		ofVertex(curPoint-inv);
-		ofVertex(prevPoint-inv);
-		ofVertex(prevPoint+inv);
-		ofEndShape();
-		prevPoint=curPoint;
-	}
-	
-	if (fillButton.pressed()) {
-		ofSetColor(currentColor);
-		ofRect((ofGetWidth()-imageSize)/2, 0, imageSize, imageSize);
-	}
-	
-	ofSetColor(48, 48, 48);
-	ofRing(ofGetWidth()/2, imageSize/2, imageSize/2, imageSize+50);
-	
-	if (drawBut.pressed()&&(drawing||fillButton.pressed())) {
-		group.grabScreen((width-imageSize)/2, 0, imageSize,imageSize);
-	}
-	
-	if(relCursorPos.mag()<imageSize/2&&drawBut.pressed()){
+	area.changeDrawSize(currentSize);
+  area.changeDrawColor(currentColor);
+  area.changeImage(group.selected().image);
+  area.draw(0,title.y+title.h,ofGetWidth(),ofGetHeight()-bottomBarH-title.h);
+  
+  if(area.overCircle(mouseX, mouseY)){
 		ofSetColor(currentColor.inverse());
 		ofRing(mouseX, mouseY, currentSize-3, currentSize);
 	}
@@ -231,7 +200,7 @@ void testApp::draw(){
 			mousePointer.draw(mouseX-5, mouseY-2);
 		}
 	}
-
+  title.draw("Upload images to the wheel",0,0);
 }
 
 
@@ -290,7 +259,7 @@ void testApp::mousePressed(int x, int y, int button){
 		else if(undoButton.clickDown(x, y)) group.undo();
 		else if(redoButton.clickDown(x, y)) group.redo();
 		else if(sizes.clickDown(x, y)) currentSize=sizes.getSize();
-		else if(fillButton.clickDown(x, y));
+		else if(fillButton.clickDown(x, y)) area.fill();
 		else if (colGrid.clickDown(x, y)>=0) {
 			currentColor=colGrid.getColor();
 		}
@@ -300,6 +269,7 @@ void testApp::mousePressed(int x, int y, int button){
 			diyButton.setPressed(false);
 		}
 	}
+  area.clickDown(x, y);
 }
 
 bool testApp::checkButton(ofButton & t,int x, int y)
@@ -345,10 +315,11 @@ void testApp::mouseReleased(int x, int y, int button){
 		drawing=false;
 		group.saveState();
 	}
+  area.clickUp();
 }
 
 //--------------------------------------------------------------
 void testApp::windowResized(int w, int h){
-
+  group.setPos(20, 20, 70, ofGetHeight()-40);
 }
 

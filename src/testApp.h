@@ -11,6 +11,10 @@
 
 #include "ofSpinner.h"
 
+#include "imageArea.h"
+
+#include "dallasEng.h"
+
 class testApp : public ofBaseApp{
 	
 	int width;
@@ -87,6 +91,9 @@ class testApp : public ofBaseApp{
 	ofxDirList   DIR;
 	povImages		preDef;
 	int			nImages;
+  
+  imageArea area;
+  titleBar title;
 	
 	/******************* home screen buttons **************/
 	

@@ -44,8 +44,9 @@ void povImage::draw(int _x, int _y)
 {
 	x=_x;
 	y=_y;
-	if(selected) roundedBox(x-5,y-5,w+10,h+10,10,1,.5,.5,.1);
-	else roundedBox(x-5,y-5,w+10,h+10,10,.5,.5,.5,.1);
+	if(selected) ofSetColor(255,128,128);
+	else ofSetColor(128,128,128);
+  ofRoundedRect(x-5,y-5,w+10,h+10,10);
 	ofSetColor(255,255,255);
 	image.draw(x, y,w,h);
 }
@@ -56,7 +57,7 @@ void povImage::drawUpload(int _x, int _y)
 	y=_y;
 	if(bChose) ofSetColor(128, 255, 128);
 	else ofSetColor(128, 128, 128);
-	ofRoundBox(x-5,y-5,w+10,h+10,10);
+	ofRoundedRect(x-5,y-5,w+10,h+10,10);
 	ofSetColor(255,255,255);
 	image.draw(x, y,w,h);
 	times.draw(x+w/2, y+h+7);
@@ -64,8 +65,9 @@ void povImage::drawUpload(int _x, int _y)
 
 void povImage::draw()
 {
-	if(selected) roundedBox(x-5,y-5,w+10,h+10,10,1,.5,.5,.1);
-	else roundedBox(x-5,y-5,w+10,h+10,10,.5,.5,.5,.1);
+	if(selected) ofSetColor(255,128,128);
+	else ofSetColor(128,128,128);
+  ofRoundedRect(x-5,y-5,w+10,h+10,10);
 	glColor3f(1,1,1);
 	image.draw(x, y,w,h);
 }
@@ -183,7 +185,8 @@ void povImages::draw(int _x, int _y)
 	x=_x,y=_y;
 	ofSetColor(0x60431B);
 	ofRect(x, y, w, h);
-	ofRoundShadow(x-5, y-5, w+10, h+10, 5, .5);
+  
+	ofShadowRounded(x-5, y-5, w+10, h+10, 5);
 	ofShade(x, y, 10, h, OF_RIGHT,.25);
 	ofShade(x+w, y, 10, h, OF_LEFT,.25);
 	for (unsigned int i=0; i<images.size(); i++) {

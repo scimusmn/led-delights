@@ -23,7 +23,8 @@ bool ofSaveButton::clickUp()
 void ofSaveButton::draw(int _x,int _y)
 {
 	x=_x,y=_y;
-	roundedBox(x, y, w, h, h/4, r/255.,g/255.,b/255.);
+  ofSetColor(r, g, b);
+	ofRoundedRect(x, y, w, h, h/4);
 }
 void ofSaveButton::drag(int _x,int _y)
 {
@@ -173,7 +174,8 @@ void sizeSelect::draw(int _x, int _y)
 	ofColor cur=ofGetStyle().color;
 	ofSetColor(0x60431B);
 	ofRect(x, y, w, h);
-	ofRoundShadow(x-5, y-5, w+10, h+10, 5, .5);
+  ofSetShadowDarkness(.5);
+	ofShadowRounded(x-5, y-5, w+10, h+10, 5);
 	ofShade(x, y, 10, h, OF_RIGHT,.25);
 	ofShade(x+w, y, 10, h, OF_LEFT,.25);
 	

@@ -46,7 +46,8 @@ public:
 		x=_x, y=_y;
 		if(bPressed) ofSetColor(color-.2*255);
 		else ofSetColor(color);
-		ofRoundShape(x,y,w,h, 3,true);
+    ofFlat();
+		ofRoundedRect(x,y,w,h, 0);
 		ofSetColor(0, 0, 0);
 		arial.drawString(label, x+3, y+13);
 	}
@@ -140,6 +141,7 @@ public:
 	bool clickDown(int _x, int _y);
 	bool upClickDown(int _x, int _y);
 	void setSelected(int i);
+  povImage & selected(){ return images[nSelected]; }
 	povImage & operator[](int i);
 	int size();
 	void saveState();
