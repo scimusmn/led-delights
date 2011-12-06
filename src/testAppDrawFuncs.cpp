@@ -56,20 +56,6 @@ void testApp::predefBarDraw()
 void testApp::drawBarDraw(int x, int y)
 {
 		//--------------------- Background
-		
-	//double sideBarImgAdj=ofGetHeight()/double(sideBarBack.width);
-//	ofSetColor(220, 220, 220);
-//	sideBarBack.draw(ofGetWidth()-rightBarWidth+sideBarBack.width*sideBarImgAdj, 0,-sideBarBack.width*sideBarImgAdj,ofGetHeight());
-//	ofShade(ofGetWidth()-rightBarWidth, 0, 20, ofGetHeight(), OF_RIGHT,.15);
-//	ofShade(ofGetWidth()-rightBarWidth, 0, 10, ofGetHeight()-bottomBarH, OF_LEFT,.5);
-//	ofShade(ofGetWidth()-rightBarWidth, ofGetHeight()-bottomBarH, 5, bottomBarH, OF_LEFT,.5);
-	
-	/*ofSetColor(220, 220, 220);
-	double sideBarImgAdj=ofGetHeight()/double(sideBarBack.width);
-	sideBarBack.draw(rightBarWidth-sideBarBack.width*sideBarImgAdj, 0,sideBarBack.width*sideBarImgAdj,ofGetHeight());
-	ofShade(rightBarWidth, 0, 15, ofGetHeight(), OF_LEFT,.35);
-	ofShade(rightBarWidth, 0, 10, ofGetHeight()-bottomBarH, OF_RIGHT,.5);
-	ofShade(rightBarWidth, ofGetHeight()-bottomBarH, 5, bottomBarH, OF_RIGHT,.5);*/
   
   ofRectangle bar(x,y,rightBarWidth,ofGetHeight());
   

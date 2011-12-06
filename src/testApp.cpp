@@ -92,6 +92,8 @@ void testApp::setup(){
 	
   area.setup();
   title.loadFont("fonts/DinC.ttf",40);
+  
+  bar.setup(area);
 }
 
 //--------------------------------------------------------------
@@ -110,11 +112,7 @@ void testApp::update(){
 
 void testApp::drawPredef()
 {
-	int imageSize=ofGetHeight()-bottomBarH;
-	preDef.display((ofGetWidth()-imageSize)/2, 0, imageSize, imageSize);
-	
-	ofSetColor(48, 48, 48);
-	ofRing(ofGetWidth()/2, imageSize/2, imageSize/2, imageSize+50);
+	area.changeImage(preDef.selected().image);
 }
 
 void testApp::drawEdit()
@@ -122,12 +120,6 @@ void testApp::drawEdit()
 	area.changeDrawSize(currentSize);
   area.changeDrawColor(currentColor);
   area.changeImage(group.selected().image);
-  area.draw(0,title.y+title.h,ofGetWidth(),ofGetHeight()-bottomBarH-title.h);
-  
-  if(area.overCircle(mouseX, mouseY)){
-		ofSetColor(currentColor.inverse());
-		ofRing(mouseX, mouseY, currentSize-3, currentSize);
-	}
 }
 
 //--------------------------------------------------------------
@@ -172,11 +164,17 @@ void testApp::draw(){
 		if(drawBut.pressed()) drawEdit();
 		else if(predefBut.pressed()) drawPredef();
 		
+    
+    area.draw(0,bar.y+bar.h,ofGetWidth(),ofGetHeight()-(bar.y+bar.h)+2);
+    if(area.overCircle(mouseX, mouseY)){
+      ofSetColor(currentColor.inverse());
+      ofRing(mouseX, mouseY, currentSize-3, currentSize);
+    }
 		//------------------------- Bottom Bar ------------------------
-		bottomBarDraw();
+		//bottomBarDraw();
 		
 		//------------------------- Right Sidebar -----------------------
-			if(drawBut.pressed()) drawBarDraw(0,0);
+			if(drawBut.pressed()) drawBarDraw(area.x ,bar.y+bar.h);
 		
 		//------------------------- Left Sidebar ------------------------
 			if(predefBut.pressed()) predefBarDraw();
@@ -201,6 +199,7 @@ void testApp::draw(){
 		}
 	}
   title.draw("Upload images to the wheel",0,0);
+  bar.draw(0, title.y+title.h);
 }
 
 

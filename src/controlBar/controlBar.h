@@ -16,15 +16,15 @@
 
 #include "dallasEng.h"
 
-class controlBar {
+class controlBar : public toolBar {
 protected:
   dallasButton upload;
   ofButton undo;
   ofButton redo;
+  ofButton drawB,demo,predef;
   imageArea * image;
 public:
-  double x,y,w,h;
-  void setup();
+  void setup(imageArea & img);
   void draw(int x, int y);
   void drawForeground();
   void update();

@@ -16,6 +16,7 @@
 		AABDF41812E9E16F00218FE6 /* povImage.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AABDF41712E9E16F00218FE6 /* povImage.cpp */; };
 		AAF372251487DA2E00E5B730 /* imageArea.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AAF372241487DA2E00E5B730 /* imageArea.cpp */; };
 		AAF372541487E25C00E5B730 /* dallasEng.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AAF372521487E25C00E5B730 /* dallasEng.cpp */; };
+		AAF37543148D6A1D00E5B730 /* uploadModule.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AAF37542148D6A1D00E5B730 /* uploadModule.cpp */; };
 		E45BE0AA0E8CC67C009D7055 /* GLee.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E45BE0A90E8CC67C009D7055 /* GLee.a */; };
 		E45BE2E40E8CC69C009D7055 /* rtAudio.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E45BE2E30E8CC69C009D7055 /* rtAudio.a */; };
 		E45BE97B0E8CC7DD009D7055 /* AGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E45BE9710E8CC7DD009D7055 /* AGL.framework */; };
@@ -131,6 +132,8 @@
 		AAF372501487E25C00E5B730 /* master */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = master; sourceTree = "<group>"; };
 		AAF372521487E25C00E5B730 /* dallasEng.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = dallasEng.cpp; sourceTree = "<group>"; };
 		AAF372531487E25C00E5B730 /* dallasEng.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = dallasEng.h; sourceTree = "<group>"; };
+		AAF37541148D6A1D00E5B730 /* uploadModule.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = uploadModule.h; path = controlBar/uploadModule/uploadModule.h; sourceTree = "<group>"; };
+		AAF37542148D6A1D00E5B730 /* uploadModule.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = uploadModule.cpp; path = controlBar/uploadModule/uploadModule.cpp; sourceTree = "<group>"; };
 		E45BE0390E8CC647009D7055 /* FreeImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FreeImage.h; path = ../../../libs/freeimage/include/FreeImage.h; sourceTree = SOURCE_ROOT; };
 		E45BE03F0E8CC650009D7055 /* fmod.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = fmod.h; path = ../../../libs/fmodex/include/fmod.h; sourceTree = SOURCE_ROOT; };
 		E45BE0400E8CC650009D7055 /* fmod.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = fmod.hpp; path = ../../../libs/fmodex/include/fmod.hpp; sourceTree = SOURCE_ROOT; };
@@ -210,6 +213,7 @@
 		AA5114FD1486DC4A00BDCD7D /* control bar */ = {
 			isa = PBXGroup;
 			children = (
+				AAF37540148D69FD00E5B730 /* upload */,
 				AA5115021486E13100BDCD7D /* controlBar.h */,
 				AA5115031486E13100BDCD7D /* controlBar.cpp */,
 			);
@@ -439,6 +443,15 @@
 			children = (
 			);
 			path = tags;
+			sourceTree = "<group>";
+		};
+		AAF37540148D69FD00E5B730 /* upload */ = {
+			isa = PBXGroup;
+			children = (
+				AAF37541148D6A1D00E5B730 /* uploadModule.h */,
+				AAF37542148D6A1D00E5B730 /* uploadModule.cpp */,
+			);
+			name = upload;
 			sourceTree = "<group>";
 		};
 		BB4B014C10F69532006C3DED /* addons */ = {
@@ -830,6 +843,7 @@
 				AA5115041486E13100BDCD7D /* controlBar.cpp in Sources */,
 				AAF372251487DA2E00E5B730 /* imageArea.cpp in Sources */,
 				AAF372541487E25C00E5B730 /* dallasEng.cpp in Sources */,
+				AAF37543148D6A1D00E5B730 /* uploadModule.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

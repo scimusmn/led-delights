@@ -9,27 +9,6 @@
 
 #include "ofInterCustom.h"
 
-bool ofSaveButton::clickDown(int _x, int _y)
-{
-	if(over(_x, _y)){
-		bPressed=true;
-		r=32,g=64,b=128;
-	}
-}
-bool ofSaveButton::clickUp()
-{
-	r=64,g=128,b=255;
-}
-void ofSaveButton::draw(int _x,int _y)
-{
-	x=_x,y=_y;
-  ofSetColor(r, g, b);
-	ofRoundedRect(x, y, w, h, h/4);
-}
-void ofSaveButton::drag(int _x,int _y)
-{
-}
-
 
 bool colorButton::clickDown(int _x, int _y)
 {

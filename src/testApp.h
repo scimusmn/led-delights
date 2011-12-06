@@ -12,6 +12,7 @@
 #include "ofSpinner.h"
 
 #include "imageArea.h"
+#include "controlBar.h"
 
 #include "dallasEng.h"
 
@@ -94,6 +95,7 @@ class testApp : public ofBaseApp{
   
   imageArea area;
   titleBar title;
+  controlBar bar;
 	
 	/******************* home screen buttons **************/
 	
