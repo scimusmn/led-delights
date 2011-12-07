@@ -12,17 +12,21 @@
 #include "ofMain.h"
 #include "ofExtended.h"
 
+#include "povImage.h"
+
 enum ledControlMode {
   LED_HOME, LED_DRAW, LED_PREDEF, LED_DEMO
 };
 
 class imageArea {
 protected:
+  povImage * pImage;
   ofImage * image;
   bool bCapture;
   
   bool bDrawing;
   bool bFill;
+  bool bChanged;
   
   ofColor drawColor;
   double drawSize;
@@ -35,7 +39,7 @@ public:
   void setup();
   void recaptureImage();
   void captureScreen();
-  void changeImage(ofImage & img);
+  void changeImage(povImage & img);
   void changeDrawSize(double sz);
   void changeDrawColor(ofColor & cl);
   
@@ -51,4 +55,6 @@ public:
   
   double radius();
   ofPoint imageCenter();
+  
+  povImage & currentImage();
 };

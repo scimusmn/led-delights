@@ -4,9 +4,7 @@
 
 #include "ofMain.h"
 #include "ofExtended.h"
-#include "ofInterCustom.h"
 #include "povImage.h"
-#include "ofxDirList.h"
 #include <ofxSystemCall.h>
 
 #include "ofSpinner.h"
@@ -33,9 +31,7 @@ class testApp : public ofBaseApp{
 	void drawEdit();
 	void drawDemo();
 	
-	void bottomBarDraw();
 	void predefBarDraw();
-	void drawBarDraw(int x, int y);
 
 		void keyPressed  (int key);
 		void keyReleased(int key);
@@ -52,10 +48,7 @@ class testApp : public ofBaseApp{
 	
 	/****************** drawing variables **************/
 	
-	ofColor			currentColor;
-	int				currentSize;
 	povImages		group;
-	ofPoint			prevPoint;
 	bool			drawing;
 	bool			editing;
 	
@@ -69,9 +62,6 @@ class testApp : public ofBaseApp{
 	ofButton		fillButton;
 	ofButton		diyButton;
 	
-	colorGrid		colGrid;
-	sizeSelect		sizes;
-	
 	
 	/**************** position variables ***************/
 	
@@ -81,11 +71,6 @@ class testApp : public ofBaseApp{
 	
 	/***************** upload vars *****************/
 	
-	ofButton		cancelButton;
-	ofButton		sendButton;
-	int				upYoff;
-	int				upXoff;
-	ofTabs			tabs;
 	ofProgressSpinner spinner;
 	
 	ofSystemCall	systemCall;
@@ -98,22 +83,6 @@ class testApp : public ofBaseApp{
   controlBar bar;
 	
   drawToolBar tBar;
-  
-	/******************* home screen buttons **************/
-	
-	ofTimer timeout;
-	ofButton predefBut;
-	ofButton drawBut;
-	ofButton demoBut;
-	ofButton homeBut;
-	ofImage background;
-	
-	ofImage drawPic;
-	ofImage demoPic;
-	ofImage predefPic;
-	
-	bool buttonPressed();
-	bool checkButton(ofButton & t, int x, int y);
 
 };
 

@@ -15,7 +15,6 @@ void povImage::loadImage(string filename, bool anm)
 	bAnimation=anm;
 	bChose=false;
 	dispTime=0;
-	stateCount=0;
 	size_t found;
 	found=filename.rfind("/");
 	if (found==string::npos) found=0;
@@ -51,18 +50,6 @@ void povImage::draw(int _x, int _y)
 	image.draw(x, y,w,h);
 }
 
-void povImage::drawUpload(int _x, int _y)
-{
-	x=_x;
-	y=_y;
-	if(bChose) ofSetColor(128, 255, 128);
-	else ofSetColor(128, 128, 128);
-	ofRoundedRect(x-5,y-5,w+10,h+10,10);
-	ofSetColor(255,255,255);
-	image.draw(x, y,w,h);
-	times.draw(x+w/2, y+h+7);
-}
-
 void povImage::draw()
 {
 	if(selected) ofSetColor(255,128,128);
@@ -80,14 +67,6 @@ bool povImage::clickDown(int _x, int _y)
 	return over(_x, _y);
 }
 
-bool povImage::clickDown_upload(int _x, int _y)
-{
-	if (over(_x, _y)) {
-		bChose=!bChose;
-	}
-	if(times.clickDown(_x, _y));
-}
-
 void povImage::setPos(int _x, int _y, int _w, int _h)
 {
 	cSetup(_x, _y, _w, _h);
@@ -96,43 +75,27 @@ void povImage::setPos(int _x, int _y, int _w, int _h)
 
 void povImage::saveState()
 {
-	while (stateCount>0) {
-		storedState.pop_front();
-		stateCount--;
-	}
-	storedState.push_front(image);
-	if (storedState.size()>10) {
-		storedState.pop_back();
-	}
+  states.recordState(image);
 }
 
 void povImage::undo()
 {
-	if (storedState.size()&&++stateCount>storedState.size()-1) {
-		stateCount=storedState.size()-1;
-	}
-	cout <<"State count "<< stateCount << " stored state " << storedState.size()<< endl;
-	if(storedState.size())
-		image=storedState[stateCount];
+	image=*states.undoState();
 }
 
 void povImage::redo()
 {
-	if (--stateCount<=0) {
-		stateCount=0;
-	}
-	image=storedState[stateCount];
-	cout <<"State count "<< stateCount << " stored state " << storedState.size()<< endl;
+	image=*states.redoState();
 }
 
 bool povImage::undoAvailable()
 {
-	return (stateCount<storedState.size()-1);
+	return states.undoAvailable();
 }
 
 bool povImage::redoAvailable()
 {
-	return stateCount>0;
+	return states.redoAvailable();
 }
 
 void povImage::saveFile(string dirname)
@@ -144,13 +107,46 @@ void povImage::writePlaylistEntry(ofstream * out,string dirname)
 {
 	if(bChose||selected){
 		if(bAnimation){
-			cout << file << endl;
 			(*out) << "animation2 " << file << " 2 "<<1/double(fps)<< " " << times.getChoice()<<endl;
 		}
 		else{
 			(*out) << "picture2 "<< file << " 3 " << times.getChoice() << ".0" <<endl;
 		}
 	}
+}
+
+void povImage::writePlaylist(string filename)
+{
+  ofstream plst(ofToDataPath(filename).c_str());
+	if(bChose||selected){
+		if(bAnimation){
+			plst << "animation2 " << file << " 2 "<<1/double(fps)<< " " << times.getChoice()<<endl;
+		}
+		else{
+			plst << "picture2 "<< file << " 3 " << times.getChoice() << ".0" <<endl;
+		}
+	}
+  plst.close();
+}
+
+void povImages::loadImages(string dir)
+{
+  pad.x=pad.y=20;
+  int nImages = DIR.listDir(dir);
+  //you can now iterate through the files as you like
+  for(int i = 0; i < min(nImages,8); i++){
+		string t=DIR.getPath(i);
+		string temp=t.substr(t.find_last_of(".")+1,t.find_last_of(".")+4);
+		if(!temp.compare("jpg")) newImage(DIR.getPath(i), false);
+		else if(!temp.compare("gif")) newImage(DIR.getPath(i), true);
+  }
+  h=pad.y;
+  for (unsigned int i=0; i<images.size(); i++) {
+    images[i].w=images[i].h=100;
+    w=images[i].w+pad.x*2;
+    h+=images[i].h+pad.y;
+  }
+  setSelected(0);
 }
 	
 void povImages::newImage(string filename, bool anm)
@@ -174,55 +170,18 @@ void povImages::writePlaylist(string filename)
 	plst.close();
 }
 
-void povImages::display(int _x, int _y, int _w, int _h)
-{
-	
-	images[nSelected].display(_x,_y,_w,_h);
-}
-
 void povImages::draw(int _x, int _y)
 {
 	x=_x,y=_y;
-	ofSetColor(0x60431B);
+	ofSetColor(0,0,0,128);
 	ofRect(x, y, w, h);
-  
-	ofShadowRounded(x-5, y-5, w+10, h+10, 5);
-	ofShade(x, y, 10, h, OF_RIGHT,.25);
-	ofShade(x+w, y, 10, h, OF_LEFT,.25);
+  int yPos=y+pad.y;
 	for (unsigned int i=0; i<images.size(); i++) {
-		images[i].draw(x+(w-images[i].w)/2,y+20+(images[i].h+20)*i);
+		images[i].draw(x+(w-images[i].w)/2,yPos);
+    yPos+=images[i].h+pad.y;
 	}
 }
 
-void povImages::drawUpload(int _x, int _y, int space)
-{
-	x=_x,y=_y;
-	for (unsigned int i=0; i<images.size(); i++) {
-		images[i].drawUpload(x+(images[i].w+space)*(i%4),y+(images[i].h+space)*(i/4));
-	}
-}
-
-void povImages::setThumbSize(int _w, int _h){
-	wid=_w;
-	hgt=_h;
-	for (unsigned int i=0; i<images.size(); i++) {
-		images[i].changeSize(wid,hgt);
-	}
-}
-
-void povImages::setPos(int _x, int _y, int _w, int _h)
-{
-	hgt=_w-20;
-	int thumb=max(h/(images.size()*(hgt)),double(_w));
-	setThumbSize(thumb, thumb);
-	cSetup(_x, _y, thumb+40, _h);
-	clipboard=images[0].image;
-}
-
-void povImages::grabScreen(int _x, int _y, int _w, int _h)
-{
-	images[nSelected].image.grabScreen(_x,_y,_w,_h);
-}
 
 bool povImages::clickDown(int _x, int _y){
 	bool ret=false;
@@ -240,14 +199,6 @@ bool povImages::clickDown(int _x, int _y){
 	return ret;
 }
 
-bool povImages::upClickDown(int _x, int _y){
-	bool ret=false;
-	for (unsigned int i=0; i<images.size(); i++) {
-		ret=images[i].clickDown_upload(_x,_y);
-	}
-	return ret;
-}
-
 povImage & povImages::operator[](int i)
 {
 	return images[i];
@@ -258,35 +209,10 @@ int povImages::size()
 	return images.size();
 }
 
-void povImages::saveState()
-{
-	images[nSelected].saveState();
-}
-
 void povImages::setSelected(int i)
 {
 	nSelected=i;
 	images[nSelected].selected=true;
-}
-
-void povImages::undo()
-{
-	images[nSelected].undo();
-}
-
-void povImages::redo()
-{
-	images[nSelected].redo();
-}
-
-bool povImages::undoAvailable()
-{
-	return images[nSelected].undoAvailable();
-}
-
-bool povImages::redoAvailable()
-{
-	return images[nSelected].redoAvailable();
 }
 
 void povImages::copy()

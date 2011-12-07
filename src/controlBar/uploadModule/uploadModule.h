@@ -12,12 +12,12 @@
 #include "ofMain.h"
 #include "ofExtended.h"
 
-#include "povImage.h"
+#include "imageArea.h"
 #include "ofxSystemCall.h"
 
 class uploadModule {
 protected:
-  povImage * image;
+  imageArea * image;
   ofSystemCall command;
 	ofProgressSpinner spinner;
   ofFont label;
@@ -25,8 +25,8 @@ protected:
   bool bRunning;
   ofTimer uploaded;
 public:
-  void setup();
-  void upload(povImage * img);
+  void setup(imageArea * img);
+  void upload();
   bool drawForeground();
   bool isUploading();
   void stopUpload();

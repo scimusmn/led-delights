@@ -26,12 +26,16 @@ void controlBar::setup(imageArea & img)
   
   home.setup("New user?", 20);
   
-  upload.setup("Send image to wheel", 25);
+  uploadBut.setup("Send image to wheel", 25);
+  
+  drawImage.loadImage("upload/images/0.jpg");
+  
+  upload.setup(image);
   
   toolBar::setup(OF_HOR);
   area.width=w=ofGetWidth();
   addSegment(20, &undo,&redo);
-  addSegment(0, &upload);
+  addSegment(0, &uploadBut);
   addSegment(30, &home);
 }
 
@@ -59,6 +63,7 @@ void controlBar::drawForeground()
     drawB.draw((ofGetWidth()-drawB.w)/2,(ofGetHeight()-drawB.h)/2);
     demo.draw((3*ofGetWidth()/2-demo.w)/2,(ofGetHeight()-demo.h)/2);
   }
+  upload.drawForeground();
 }
 
 void controlBar::update()
@@ -68,7 +73,10 @@ void controlBar::update()
 
 void controlBar::setAvailableButtons()
 {
-  if(mode==LED_HOME);
+  if(mode==LED_DRAW){
+    redo.setAvailable(drawImage.redoAvailable());
+    undo.setAvailable(drawImage.undoAvailable());
+  }
 }
 
 bool controlBar::clickDown(int _x, int _y, int button)
@@ -77,10 +85,16 @@ bool controlBar::clickDown(int _x, int _y, int button)
     if(home.clickDown(_x, _y)) image->mode=mode=LED_HOME;
   }
   else{
-    if(drawB.clickDown(_x, _y)) image->mode=mode=LED_DRAW; //image->changeImage()
+    if(drawB.clickDown(_x, _y)) image->mode=mode=LED_DRAW, image->changeImage(drawImage);
     else if(demo.clickDown(_x, _y)) image->mode=mode=LED_DEMO;
     else if(predef.clickDown(_x, _y)) image->mode=mode=LED_PREDEF;
   }
+  if(mode==LED_DRAW){
+    if(undo.clickDown(_x, _y)) drawImage.undo();
+    else if(redo.clickDown(_x, _y)) drawImage.redo();
+  }
+  if(mode==LED_DRAW||mode==LED_PREDEF) 
+    if(uploadBut.clickDown(_x, _y)) upload.upload();
 }
 
 bool controlBar::clickUp()
@@ -89,6 +103,14 @@ bool controlBar::clickUp()
   drawB.clickUp();
   demo.clickUp();
   predef.clickUp();
+  image->clickUp();
+  
+  undo.clickUp();
+  redo.clickUp();
+  
+  uploadBut.clickUp();
+  
+  setAvailableButtons();
 }
 
 bool controlBar::mouseLockout(int button)

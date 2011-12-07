@@ -12,7 +12,7 @@
 
 #include "ofMain.h"
 #include "ofExtended.h"
-#include <deque>
+#include "ofxDirList.h"
 
 class numButton : public ofButton {
 	ofColor color;
@@ -97,16 +97,15 @@ public:
 	float fps,dispTime;
 	string file;
 	ofImage image;
-	deque<ofImage> storedState;
-	int stateCount;
+	//deque<ofImage> storedState;
+  stateSave<ofImage> states;
+	//int stateCount;
 	povImage():ofInterObj(){
-		stateCount=0;
 	}
 	povImage(string filename, bool anm=false);
 	void loadImage(string filename, bool anm=false);
 	void display(int _x, int _y, int _w, int _h);
 	void draw(int _x, int _y);
-	void drawUpload(int _x, int _y);
 	void setPos(int _x, int _y, int _w, int _h);
 	void saveState();
 	void undo();
@@ -115,9 +114,9 @@ public:
 	bool redoAvailable();
 	void saveFile(string dir);
 	void writePlaylistEntry(ofstream * out,string dirname);
+  void writePlaylist(string filename);
 	void draw();
 	bool clickDown(int _x, int _y);
-	bool clickDown_upload(int _x, int _y);
 	friend class povImages;
 };
 
@@ -125,30 +124,22 @@ class povImages : public ofInterGroup {
 	int wid,hgt;
 	int nSelected;
 	ofImage clipboard;
+  ofxDirList DIR;
+  ofPoint pad;
 public:
 	povImages():ofInterGroup(){
 		nSelected=0;
 	}
 	vector<povImage> images;
 	int	thumbSize(){ return hgt; }
+  void loadImages(string dir);
 	void newImage(string filename, bool anm=false);
-	void display(int _x, int _y, int _w, int _h);
-	void setThumbSize(int _w, int _h);
-	void setPos(int _x, int _y, int _w, int _h);
-	void grabScreen(int _x, int _y, int _w, int _h);
 	void draw(int _x, int _y);
-	void drawUpload(int _x, int _y, int space=40);
 	bool clickDown(int _x, int _y);
-	bool upClickDown(int _x, int _y);
 	void setSelected(int i);
   povImage & selected(){ return images[nSelected]; }
 	povImage & operator[](int i);
 	int size();
-	void saveState();
-	void undo();
-	void redo();
-	bool undoAvailable();
-	bool redoAvailable();
 	void saveImages(string file);
 	void writePlaylist(string filename);
 	void copy();

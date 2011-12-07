@@ -13,18 +13,23 @@
 #include "ofExtended.h"
 
 #include "imageArea.h"
+#include "uploadModule.h"
 
 #include "dallasEng.h"
 
 class controlBar : public toolBar {
 protected:
-  dallasButton upload;
+  dallasButton uploadBut;
   ofButton undo;
   ofButton redo;
   ofButton drawB,demo,predef;
   dallasButton home;
   imageArea * image;
   ledControlMode mode;
+  
+  uploadModule upload;
+  
+  povImage drawImage;
 public:
   void setup(imageArea & img);
   void draw(int x, int y);

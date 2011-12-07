@@ -51,7 +51,7 @@ void circleSubRect(int x, int y, int w, int h,int rad){
 void imageArea::setup()
 {
   image=0;
-  bCapture=bDrawing=bFill=false;
+  bCapture=bDrawing=bFill=bChanged=false;
   mousePointer.loadImage("pointer.png");
 }
 
@@ -60,9 +60,10 @@ void imageArea::recaptureImage()
   bCapture=true;
 }
 
-void imageArea::changeImage(ofImage & img)
+void imageArea::changeImage(povImage & img)
 {
-  image=&img;
+  pImage=&img;
+  image=&img.image;
 }
 
 void imageArea::changeDrawSize(double sz)
@@ -81,6 +82,7 @@ void imageArea::captureScreen()
     //image->allocate(h, h, OF_IMAGE_COLOR);
     image->grabScreen(x+w/2-radius(), y+h/2-radius(),radius()*2,radius()*2);
     bCapture=false;
+    if(bChanged) pImage->saveState(),bChanged=false;
   }
 }
 
@@ -121,6 +123,7 @@ void imageArea::draw(int _x, int _y, int _w, int _h)
     ofSetColor(drawColor);
     ofRect(x, y, w, h);
     bFill=false;
+    bChanged=true;
     recaptureImage();
   }
   
@@ -161,8 +164,13 @@ bool imageArea::clickDown(int _x, int _y)
 
 bool imageArea::clickUp()
 {
-  bDrawing=false;
-  return false;
+  bool ret=0;
+  if(bDrawing){
+    bDrawing=false;
+    ret=true;
+    pImage->saveState();
+  }
+  return ret;
 }
 
 void imageArea::drag(int _x, int _y)
@@ -183,4 +191,9 @@ double imageArea::radius()
 ofPoint imageArea::imageCenter()
 {
   return ofPoint(x+w/2,y+h/2);
+}
+
+povImage & imageArea::currentImage()
+{
+  return *pImage;
 }
