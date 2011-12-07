@@ -52,6 +52,7 @@ void imageArea::setup()
 {
   image=0;
   bCapture=bDrawing=bFill=false;
+  mousePointer.loadImage("pointer.png");
 }
 
 void imageArea::recaptureImage()
@@ -134,10 +135,24 @@ void imageArea::draw(int _x, int _y, int _w, int _h)
   ofRing(x+w/2, y+h/2, radius()-2, radius()+2);
 }
 
+void imageArea::drawForeground()
+{
+  int mouseX=ofGetAppPtr()->mouseX;
+  int mouseY=ofGetAppPtr()->mouseY;
+  if(!overCircle(mouseX, mouseY)||mode!=LED_DRAW){
+    ofSetColor(255,255,255);
+    mousePointer.draw(mouseX-5, mouseY-2);
+  }
+  else {
+    ofSetColor(drawColor.inverse());
+    ofRing(ofGetAppPtr()->mouseX, ofGetAppPtr()->mouseY, drawSize-3, drawSize);
+  }
+}
+
 bool imageArea::clickDown(int _x, int _y)
 {
   bool ret=0;
-  if(overCircle(_x, _y)){
+  if(overCircle(_x, _y)&&mode==LED_DRAW){
     bDrawing=ret=true;
     prevPoint=ofPoint(_x,_y);
   }

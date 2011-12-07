@@ -22,7 +22,9 @@ protected:
   ofButton undo;
   ofButton redo;
   ofButton drawB,demo,predef;
+  dallasButton home;
   imageArea * image;
+  ledControlMode mode;
 public:
   void setup(imageArea & img);
   void draw(int x, int y);
@@ -32,4 +34,5 @@ public:
   bool clickDown(int x, int y, int button=0);
   bool clickUp();
   bool mouseLockout(int button);
+  ledControlMode getMode(){ return mode;}
 };

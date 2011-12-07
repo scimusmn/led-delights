@@ -13,6 +13,7 @@
 
 #include "imageArea.h"
 #include "controlBar.h"
+#include "drawToolBar.h"
 
 #include "dallasEng.h"
 
@@ -20,7 +21,6 @@ class testApp : public ofBaseApp{
 	
 	int width;
 	int height;
-	ofImage mousePointer;
 	ofImage sideBarBack;
 
 	public:
@@ -97,6 +97,8 @@ class testApp : public ofBaseApp{
   titleBar title;
   controlBar bar;
 	
+  drawToolBar tBar;
+  
 	/******************* home screen buttons **************/
 	
 	ofTimer timeout;

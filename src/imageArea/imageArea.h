@@ -12,6 +12,10 @@
 #include "ofMain.h"
 #include "ofExtended.h"
 
+enum ledControlMode {
+  LED_HOME, LED_DRAW, LED_PREDEF, LED_DEMO
+};
+
 class imageArea {
 protected:
   ofImage * image;
@@ -23,7 +27,10 @@ protected:
   ofColor drawColor;
   double drawSize;
   ofPoint prevPoint;
+  
+  ofImage mousePointer;
 public:
+  ledControlMode mode;
   double x,y,w,h;
   void setup();
   void recaptureImage();
@@ -36,6 +43,7 @@ public:
   void fill();
   
   void draw(int _x, int _y, int _w, int _h);
+  void drawForeground();
   bool clickDown(int _x, int _y);
   bool clickUp();
   void drag(int _x, int _y);

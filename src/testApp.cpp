@@ -45,7 +45,6 @@ void testApp::setup(){
 	
 	ofHideCursor();
 	
-	mousePointer.loadImage("pointer.png");
 	sideBarBack.loadImage("woodPanel.jpg");
 	
 	redoButton.setup(0, 0, 64, 64, "images/redo.png");
@@ -94,6 +93,7 @@ void testApp::setup(){
   title.loadFont("fonts/DinC.ttf",40);
   
   bar.setup(area);
+  tBar.setup(area);
 }
 
 //--------------------------------------------------------------
@@ -117,64 +117,55 @@ void testApp::drawPredef()
 
 void testApp::drawEdit()
 {
-	area.changeDrawSize(currentSize);
-  area.changeDrawColor(currentColor);
   area.changeImage(group.selected().image);
 }
 
 //--------------------------------------------------------------
 void testApp::draw(){
-	if(!buttonPressed()){
-		ofSetColor(128, 128, 128);
-		background.draw(0, 0,ofGetWidth(),ofGetHeight());
-		predefBut.changeSize(200, 200);
-		predefBut.move(ofGetWidth()/4-predefBut.w/2, (ofGetHeight()/2-predefBut.h)/2);
-		drawBut.changeSize(200, 200);
-		drawBut.move(ofGetWidth()/2-drawBut.w/2, (ofGetHeight()-drawBut.h)/2);
-		demoBut.changeSize(200, 200);
-		demoBut.move(3*ofGetWidth()/4-demoBut.w/2, (ofGetHeight()/2-demoBut.h)/2);
-		//predefBut.drawTextButton(ofGetWidth()/4-predefBut.w/2, ofGetHeight()/2);
-		//drawBut.drawTextButton(ofGetWidth()/2-drawBut.w/2, ofGetHeight()/2);
-		//demoBut.drawTextButton(3*ofGetWidth()/4-demoBut.w/2, ofGetHeight()/2);
-		
-		ofSetColor(255, 255, 255);
-		predefPic.draw(predefBut.x, predefBut.y,predefBut.w, predefBut.h);
-		drawPic.draw(drawBut.x, drawBut.y,drawBut.w, drawBut.h);
-		demoPic.draw(demoBut.x, demoBut.y,demoBut.w, demoBut.h);
-		
-		arial.setSize(30);
-		arial.setMode(OF_FONT_CENTER);
-		arial.drawString("Send sample image", predefBut.x+predefBut.w/2, predefBut.y-50);
-		arial.drawString("Draw your own image for the wheel", drawBut.x+drawBut.w/2, drawBut.y+drawBut.h+50);
-		arial.drawString("How it works", demoBut.x+demoBut.w/2, demoBut.y-50);
-		
-		arial.setMode(OF_FONT_LEFT);
-		arial.setSize(10);
-		
-		ofSetColor(255,255,255);
-		mousePointer.draw(mouseX-5, mouseY-2);
-	}
-	else{
+	//if(!buttonPressed()){
+//		ofSetColor(128, 128, 128);
+//		background.draw(0, 0,ofGetWidth(),ofGetHeight());
+//		predefBut.changeSize(200, 200);
+//		predefBut.move(ofGetWidth()/4-predefBut.w/2, (ofGetHeight()/2-predefBut.h)/2);
+//		drawBut.changeSize(200, 200);
+//		drawBut.move(ofGetWidth()/2-drawBut.w/2, (ofGetHeight()-drawBut.h)/2);
+//		demoBut.changeSize(200, 200);
+//		demoBut.move(3*ofGetWidth()/4-demoBut.w/2, (ofGetHeight()/2-demoBut.h)/2);
+//		//predefBut.drawTextButton(ofGetWidth()/4-predefBut.w/2, ofGetHeight()/2);
+//		//drawBut.drawTextButton(ofGetWidth()/2-drawBut.w/2, ofGetHeight()/2);
+//		//demoBut.drawTextButton(3*ofGetWidth()/4-demoBut.w/2, ofGetHeight()/2);
+//		
+//		ofSetColor(255, 255, 255);
+//		predefPic.draw(predefBut.x, predefBut.y,predefBut.w, predefBut.h);
+//		drawPic.draw(drawBut.x, drawBut.y,drawBut.w, drawBut.h);
+//		demoPic.draw(demoBut.x, demoBut.y,demoBut.w, demoBut.h);
+//		
+//		arial.setSize(30);
+//		arial.setMode(OF_FONT_CENTER);
+//		arial.drawString("Send sample image", predefBut.x+predefBut.w/2, predefBut.y-50);
+//		arial.drawString("Draw your own image for the wheel", drawBut.x+drawBut.w/2, drawBut.y+drawBut.h+50);
+//		arial.drawString("How it works", demoBut.x+demoBut.w/2, demoBut.y-50);
+//		
+//		arial.setMode(OF_FONT_LEFT);
+//		arial.setSize(10);
+//	}
+	if(1){
 		int imageSize=ofGetHeight()-bottomBarH;
 		
 		ofVector relCursorPos(mouseX-ofGetWidth()/2,mouseY-imageSize/2);
 		
 		//---------------------- Drawing Stage --------------------------
 		
-		if(drawBut.pressed()) drawEdit();
-		else if(predefBut.pressed()) drawPredef();
+		if(bar.getMode()==LED_DRAW) drawEdit();
+		else if(bar.getMode()==LED_PREDEF) drawPredef();
 		
     
     area.draw(0,bar.y+bar.h,ofGetWidth(),ofGetHeight()-(bar.y+bar.h)+2);
-    if(area.overCircle(mouseX, mouseY)){
-      ofSetColor(currentColor.inverse());
-      ofRing(mouseX, mouseY, currentSize-3, currentSize);
-    }
 		//------------------------- Bottom Bar ------------------------
 		//bottomBarDraw();
 		
 		//------------------------- Right Sidebar -----------------------
-			if(drawBut.pressed()) drawBarDraw(area.x ,bar.y+bar.h);
+			if(drawBut.pressed()) 
 		
 		//------------------------- Left Sidebar ------------------------
 			if(predefBut.pressed()) predefBarDraw();
@@ -193,13 +184,15 @@ void testApp::draw(){
 			arial.setMode(OF_FONT_LEFT);
 		}
 		
-		if(relCursorPos.mag()>imageSize/2||(uploadButton.pressed()||!drawBut.pressed())){
-			ofSetColor(255,255,255);
-			mousePointer.draw(mouseX-5, mouseY-2);
-		}
 	}
   title.draw("Upload images to the wheel",0,0);
   bar.draw(0, title.y+title.h);
+  
+  tBar.draw(0,bar.y+bar.h);
+  
+  bar.drawForeground();
+  tBar.drawForeground();
+  area.drawForeground();
 }
 
 
@@ -269,6 +262,8 @@ void testApp::mousePressed(int x, int y, int button){
 		}
 	}
   area.clickDown(x, y);
+  tBar.clickDown(x, y);
+  bar.clickDown(x, y, button);
 }
 
 bool testApp::checkButton(ofButton & t,int x, int y)
@@ -315,6 +310,8 @@ void testApp::mouseReleased(int x, int y, int button){
 		group.saveState();
 	}
   area.clickUp();
+  tBar.clickUp();
+  bar.clickUp();
 }
 
 //--------------------------------------------------------------

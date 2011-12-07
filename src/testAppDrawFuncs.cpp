@@ -13,34 +13,6 @@
 
 extern ofColor black,gray, white, red, yellow, orange, blue;
 
-void testApp::bottomBarDraw()
-{
-	ofSetColor(gray);
-	//ofShadeBox(0, ofGetHeight()-bottomBarH, ofGetWidth(), bottomBarH, OF_DOWN,(0xCF-0xA8)/255.);
-  ofRect(0, ofGetHeight()-bottomBarH, ofGetWidth(), bottomBarH);
-	ofSetColor(black);
-  drawHatching(0, ofGetHeight()-bottomBarH, ofGetWidth(), bottomBarH, 50, 50);
-	homeBut.draw(ofGetWidth()-homeBut.w-20, ofGetHeight()-(bottomBarH+homeBut.h)/2);
-	if(drawBut.pressed()){
-		redoButton.draw((ofGetWidth()-redoButton.w)/2-50,ofGetHeight()-(bottomBarH+redoButton.h)/2);
-		undoButton.draw((ofGetWidth()-undoButton.w)/2+50,ofGetHeight()-(bottomBarH+undoButton.h)/2);
-		demoBut.changeSize(64, 64);
-		demoBut.draw(homeBut.x-20-demoBut.w, ofGetHeight()-(bottomBarH+demoBut.h)/2,64,64);
-		predefBut.draw(demoBut.x-20-predefBut.w, ofGetHeight()-(bottomBarH+predefBut.h)/2,64,64);
-	}
-	if(predefBut.pressed()){
-		demoBut.draw(homeBut.x-20-demoBut.w, ofGetHeight()-(bottomBarH+demoBut.h)/2,64,64);
-		drawBut.draw(demoBut.x-20-drawBut.w, ofGetHeight()-(bottomBarH+drawBut.h)/2,64,64);
-	}
-	if(demoBut.pressed()){
-		drawBut.draw(homeBut.x-20-drawBut.w, ofGetHeight()-(bottomBarH+drawBut.h)/2,64,64);
-		predefBut.draw(drawBut.x-20-predefBut.w, ofGetHeight()-(bottomBarH+predefBut.h)/2,64,64);
-	}
-	if(!demoBut.pressed()) uploadButton.draw(ofGetWidth()-240,ofGetHeight()-320);
-	
-	
-}
-
 void testApp::predefBarDraw()
 {
 	ofSetColor(220, 220, 220);

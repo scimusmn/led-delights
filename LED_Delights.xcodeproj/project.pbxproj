@@ -17,6 +17,8 @@
 		AAF372251487DA2E00E5B730 /* imageArea.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AAF372241487DA2E00E5B730 /* imageArea.cpp */; };
 		AAF372541487E25C00E5B730 /* dallasEng.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AAF372521487E25C00E5B730 /* dallasEng.cpp */; };
 		AAF37543148D6A1D00E5B730 /* uploadModule.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AAF37542148D6A1D00E5B730 /* uploadModule.cpp */; };
+		AAF37594148E786400E5B730 /* toolSelect.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AAF37593148E786400E5B730 /* toolSelect.cpp */; };
+		AAF375B8148E863C00E5B730 /* drawToolBar.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AAF375B7148E863C00E5B730 /* drawToolBar.cpp */; };
 		E45BE0AA0E8CC67C009D7055 /* GLee.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E45BE0A90E8CC67C009D7055 /* GLee.a */; };
 		E45BE2E40E8CC69C009D7055 /* rtAudio.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E45BE2E30E8CC69C009D7055 /* rtAudio.a */; };
 		E45BE97B0E8CC7DD009D7055 /* AGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E45BE9710E8CC7DD009D7055 /* AGL.framework */; };
@@ -134,6 +136,10 @@
 		AAF372531487E25C00E5B730 /* dallasEng.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = dallasEng.h; sourceTree = "<group>"; };
 		AAF37541148D6A1D00E5B730 /* uploadModule.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = uploadModule.h; path = controlBar/uploadModule/uploadModule.h; sourceTree = "<group>"; };
 		AAF37542148D6A1D00E5B730 /* uploadModule.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = uploadModule.cpp; path = controlBar/uploadModule/uploadModule.cpp; sourceTree = "<group>"; };
+		AAF37592148E786400E5B730 /* toolSelect.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = toolSelect.h; path = toolBar/toolSelect.h; sourceTree = "<group>"; };
+		AAF37593148E786400E5B730 /* toolSelect.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = toolSelect.cpp; path = toolBar/toolSelect.cpp; sourceTree = "<group>"; };
+		AAF375B6148E863C00E5B730 /* drawToolBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = drawToolBar.h; path = toolBar/drawToolBar.h; sourceTree = "<group>"; };
+		AAF375B7148E863C00E5B730 /* drawToolBar.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = drawToolBar.cpp; path = toolBar/drawToolBar.cpp; sourceTree = "<group>"; };
 		E45BE0390E8CC647009D7055 /* FreeImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FreeImage.h; path = ../../../libs/freeimage/include/FreeImage.h; sourceTree = SOURCE_ROOT; };
 		E45BE03F0E8CC650009D7055 /* fmod.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = fmod.h; path = ../../../libs/fmodex/include/fmod.h; sourceTree = SOURCE_ROOT; };
 		E45BE0400E8CC650009D7055 /* fmod.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = fmod.hpp; path = ../../../libs/fmodex/include/fmod.hpp; sourceTree = SOURCE_ROOT; };
@@ -454,6 +460,17 @@
 			name = upload;
 			sourceTree = "<group>";
 		};
+		AAF37591148E741100E5B730 /* toolBar */ = {
+			isa = PBXGroup;
+			children = (
+				AAF37592148E786400E5B730 /* toolSelect.h */,
+				AAF37593148E786400E5B730 /* toolSelect.cpp */,
+				AAF375B6148E863C00E5B730 /* drawToolBar.h */,
+				AAF375B7148E863C00E5B730 /* drawToolBar.cpp */,
+			);
+			name = toolBar;
+			sourceTree = "<group>";
+		};
 		BB4B014C10F69532006C3DED /* addons */ = {
 			isa = PBXGroup;
 			children = (
@@ -656,6 +673,7 @@
 		E4B69E1C0A3A1BDC003C02F2 /* src */ = {
 			isa = PBXGroup;
 			children = (
+				AAF37591148E741100E5B730 /* toolBar */,
 				AAF372301487E25B00E5B730 /* dallasEng */,
 				AAF372221487D8E700E5B730 /* imageArea */,
 				AA5114FD1486DC4A00BDCD7D /* control bar */,
@@ -844,6 +862,8 @@
 				AAF372251487DA2E00E5B730 /* imageArea.cpp in Sources */,
 				AAF372541487E25C00E5B730 /* dallasEng.cpp in Sources */,
 				AAF37543148D6A1D00E5B730 /* uploadModule.cpp in Sources */,
+				AAF37594148E786400E5B730 /* toolSelect.cpp in Sources */,
+				AAF375B8148E863C00E5B730 /* drawToolBar.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
