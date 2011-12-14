@@ -10,6 +10,8 @@
 #include "povImage.h"
 #include <algorithm>
 
+extern ofColor black, white, yellow, gray, blue, red, orange;
+
 void povImage::loadImage(string filename, bool anm)
 {
 	bAnimation=anm;
@@ -43,9 +45,9 @@ void povImage::draw(int _x, int _y)
 {
 	x=_x;
 	y=_y;
-	if(selected) ofSetColor(255,128,128);
-	else ofSetColor(128,128,128);
-  ofRoundedRect(x-5,y-5,w+10,h+10,10);
+	if(selected) ofSetColor(yellow);
+	else ofSetColor(white*.3);
+  ofRect(x-5,y-5,w+10,h+10);
 	ofSetColor(255,255,255);
 	image.draw(x, y,w,h);
 }
@@ -142,7 +144,7 @@ void povImages::loadImages(string dir)
   }
   h=pad.y;
   for (unsigned int i=0; i<images.size(); i++) {
-    images[i].w=images[i].h=100;
+    images[i].w=images[i].h=75;
     w=images[i].w+pad.x*2;
     h+=images[i].h+pad.y;
   }
@@ -198,6 +200,10 @@ bool povImages::clickDown(int _x, int _y){
 	}
 	return ret;
 }
+
+bool povImages::clickUp(){
+  return false;
+};
 
 povImage & povImages::operator[](int i)
 {

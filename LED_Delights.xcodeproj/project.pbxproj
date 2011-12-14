@@ -9,16 +9,16 @@
 /* Begin PBXBuildFile section */
 		AA085A8913533343004E3DF0 /* wheel.icns in CopyFiles */ = {isa = PBXBuildFile; fileRef = AA085A6A13533327004E3DF0 /* wheel.icns */; };
 		AA5115041486E13100BDCD7D /* controlBar.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AA5115031486E13100BDCD7D /* controlBar.cpp */; };
-		AA8D67DC1322D760000F0763 /* testAppDrawFuncs.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AA8D67DB1322D760000F0763 /* testAppDrawFuncs.cpp */; };
 		AA8D6ED113253F28000F0763 /* ofxDirList.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AA8D6ECF13253F28000F0763 /* ofxDirList.cpp */; };
 		AA9C32C21338FCF000CB0F81 /* ofxThread.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AA9C32C01338FCF000CB0F81 /* ofxThread.cpp */; };
-		AABDF36212E9CFAB00218FE6 /* ofInterCustom.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AABDF36012E9CFAB00218FE6 /* ofInterCustom.cpp */; };
 		AABDF41812E9E16F00218FE6 /* povImage.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AABDF41712E9E16F00218FE6 /* povImage.cpp */; };
 		AAF372251487DA2E00E5B730 /* imageArea.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AAF372241487DA2E00E5B730 /* imageArea.cpp */; };
 		AAF372541487E25C00E5B730 /* dallasEng.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AAF372521487E25C00E5B730 /* dallasEng.cpp */; };
 		AAF37543148D6A1D00E5B730 /* uploadModule.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AAF37542148D6A1D00E5B730 /* uploadModule.cpp */; };
-		AAF37594148E786400E5B730 /* toolSelect.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AAF37593148E786400E5B730 /* toolSelect.cpp */; };
-		AAF375B8148E863C00E5B730 /* drawToolBar.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AAF375B7148E863C00E5B730 /* drawToolBar.cpp */; };
+		AAF378C2148FFC6900E5B730 /* drawToolBar.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AAF378BD148FFC6900E5B730 /* drawToolBar.cpp */; };
+		AAF378C3148FFC6900E5B730 /* toolSelect.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AAF378BF148FFC6900E5B730 /* toolSelect.cpp */; };
+		AAF378C6148FFC9D00E5B730 /* predefBar.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AAF378C5148FFC9D00E5B730 /* predefBar.cpp */; };
+		AAF37AAB14916F2800E5B730 /* howItWorks.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AAF37AAA14916F2800E5B730 /* howItWorks.cpp */; };
 		E45BE0AA0E8CC67C009D7055 /* GLee.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E45BE0A90E8CC67C009D7055 /* GLee.a */; };
 		E45BE2E40E8CC69C009D7055 /* rtAudio.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E45BE2E30E8CC69C009D7055 /* rtAudio.a */; };
 		E45BE97B0E8CC7DD009D7055 /* AGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E45BE9710E8CC7DD009D7055 /* AGL.framework */; };
@@ -103,7 +103,6 @@
 		AA085A6A13533327004E3DF0 /* wheel.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = wheel.icns; path = bin/data/wheel.icns; sourceTree = "<group>"; };
 		AA5115021486E13100BDCD7D /* controlBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = controlBar.h; path = controlBar/controlBar.h; sourceTree = "<group>"; };
 		AA5115031486E13100BDCD7D /* controlBar.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = controlBar.cpp; path = controlBar/controlBar.cpp; sourceTree = "<group>"; };
-		AA8D67DB1322D760000F0763 /* testAppDrawFuncs.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = testAppDrawFuncs.cpp; sourceTree = "<group>"; };
 		AA8D6ECC13253F28000F0763 /* Instructions.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Instructions.txt; sourceTree = "<group>"; };
 		AA8D6ECD13253F28000F0763 /* install.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = install.xml; sourceTree = "<group>"; };
 		AA8D6ECF13253F28000F0763 /* ofxDirList.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ofxDirList.cpp; sourceTree = "<group>"; };
@@ -111,8 +110,6 @@
 		AA9C32BF1338FCF000CB0F81 /* ofxSystemCall.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxSystemCall.h; sourceTree = "<group>"; };
 		AA9C32C01338FCF000CB0F81 /* ofxThread.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ofxThread.cpp; sourceTree = "<group>"; };
 		AA9C32C11338FCF000CB0F81 /* ofxThread.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxThread.h; sourceTree = "<group>"; };
-		AABDF36012E9CFAB00218FE6 /* ofInterCustom.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ofInterCustom.cpp; sourceTree = "<group>"; };
-		AABDF36112E9CFAB00218FE6 /* ofInterCustom.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofInterCustom.h; sourceTree = "<group>"; };
 		AABDF41612E9E16F00218FE6 /* povImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = povImage.h; sourceTree = "<group>"; };
 		AABDF41712E9E16F00218FE6 /* povImage.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = povImage.cpp; sourceTree = "<group>"; };
 		AAF372231487DA2E00E5B730 /* imageArea.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = imageArea.h; path = imageArea/imageArea.h; sourceTree = "<group>"; };
@@ -136,10 +133,14 @@
 		AAF372531487E25C00E5B730 /* dallasEng.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = dallasEng.h; sourceTree = "<group>"; };
 		AAF37541148D6A1D00E5B730 /* uploadModule.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = uploadModule.h; path = controlBar/uploadModule/uploadModule.h; sourceTree = "<group>"; };
 		AAF37542148D6A1D00E5B730 /* uploadModule.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = uploadModule.cpp; path = controlBar/uploadModule/uploadModule.cpp; sourceTree = "<group>"; };
-		AAF37592148E786400E5B730 /* toolSelect.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = toolSelect.h; path = toolBar/toolSelect.h; sourceTree = "<group>"; };
-		AAF37593148E786400E5B730 /* toolSelect.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = toolSelect.cpp; path = toolBar/toolSelect.cpp; sourceTree = "<group>"; };
-		AAF375B6148E863C00E5B730 /* drawToolBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = drawToolBar.h; path = toolBar/drawToolBar.h; sourceTree = "<group>"; };
-		AAF375B7148E863C00E5B730 /* drawToolBar.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = drawToolBar.cpp; path = toolBar/drawToolBar.cpp; sourceTree = "<group>"; };
+		AAF378BD148FFC6900E5B730 /* drawToolBar.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = drawToolBar.cpp; sourceTree = "<group>"; };
+		AAF378BE148FFC6900E5B730 /* drawToolBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = drawToolBar.h; sourceTree = "<group>"; };
+		AAF378BF148FFC6900E5B730 /* toolSelect.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = toolSelect.cpp; sourceTree = "<group>"; };
+		AAF378C0148FFC6900E5B730 /* toolSelect.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = toolSelect.h; sourceTree = "<group>"; };
+		AAF378C4148FFC9D00E5B730 /* predefBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = predefBar.h; sourceTree = "<group>"; };
+		AAF378C5148FFC9D00E5B730 /* predefBar.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = predefBar.cpp; sourceTree = "<group>"; };
+		AAF37AA914916F2800E5B730 /* howItWorks.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = howItWorks.h; path = howItWorks/howItWorks.h; sourceTree = "<group>"; };
+		AAF37AAA14916F2800E5B730 /* howItWorks.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = howItWorks.cpp; path = howItWorks/howItWorks.cpp; sourceTree = "<group>"; };
 		E45BE0390E8CC647009D7055 /* FreeImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FreeImage.h; path = ../../../libs/freeimage/include/FreeImage.h; sourceTree = SOURCE_ROOT; };
 		E45BE03F0E8CC650009D7055 /* fmod.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = fmod.h; path = ../../../libs/fmodex/include/fmod.h; sourceTree = SOURCE_ROOT; };
 		E45BE0400E8CC650009D7055 /* fmod.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = fmod.hpp; path = ../../../libs/fmodex/include/fmod.hpp; sourceTree = SOURCE_ROOT; };
@@ -460,15 +461,42 @@
 			name = upload;
 			sourceTree = "<group>";
 		};
-		AAF37591148E741100E5B730 /* toolBar */ = {
+		AAF378BB148FFC6900E5B730 /* toolBars */ = {
 			isa = PBXGroup;
 			children = (
-				AAF37592148E786400E5B730 /* toolSelect.h */,
-				AAF37593148E786400E5B730 /* toolSelect.cpp */,
-				AAF375B6148E863C00E5B730 /* drawToolBar.h */,
-				AAF375B7148E863C00E5B730 /* drawToolBar.cpp */,
+				AAF378BC148FFC6900E5B730 /* drawBar */,
+				AAF378C1148FFC6900E5B730 /* predefBar */,
 			);
-			name = toolBar;
+			path = toolBars;
+			sourceTree = "<group>";
+		};
+		AAF378BC148FFC6900E5B730 /* drawBar */ = {
+			isa = PBXGroup;
+			children = (
+				AAF378BD148FFC6900E5B730 /* drawToolBar.cpp */,
+				AAF378BE148FFC6900E5B730 /* drawToolBar.h */,
+				AAF378BF148FFC6900E5B730 /* toolSelect.cpp */,
+				AAF378C0148FFC6900E5B730 /* toolSelect.h */,
+			);
+			path = drawBar;
+			sourceTree = "<group>";
+		};
+		AAF378C1148FFC6900E5B730 /* predefBar */ = {
+			isa = PBXGroup;
+			children = (
+				AAF378C4148FFC9D00E5B730 /* predefBar.h */,
+				AAF378C5148FFC9D00E5B730 /* predefBar.cpp */,
+			);
+			path = predefBar;
+			sourceTree = "<group>";
+		};
+		AAF37AA814916EF100E5B730 /* howItWorks */ = {
+			isa = PBXGroup;
+			children = (
+				AAF37AA914916F2800E5B730 /* howItWorks.h */,
+				AAF37AAA14916F2800E5B730 /* howItWorks.cpp */,
+			);
+			name = howItWorks;
 			sourceTree = "<group>";
 		};
 		BB4B014C10F69532006C3DED /* addons */ = {
@@ -673,15 +701,13 @@
 		E4B69E1C0A3A1BDC003C02F2 /* src */ = {
 			isa = PBXGroup;
 			children = (
-				AAF37591148E741100E5B730 /* toolBar */,
+				AAF37AA814916EF100E5B730 /* howItWorks */,
+				AAF378BB148FFC6900E5B730 /* toolBars */,
 				AAF372301487E25B00E5B730 /* dallasEng */,
 				AAF372221487D8E700E5B730 /* imageArea */,
 				AA5114FD1486DC4A00BDCD7D /* control bar */,
-				AABDF36012E9CFAB00218FE6 /* ofInterCustom.cpp */,
-				AABDF36112E9CFAB00218FE6 /* ofInterCustom.h */,
 				E4B69E1D0A3A1BDC003C02F2 /* main.cpp */,
 				E4B69E1E0A3A1BDC003C02F2 /* testApp.cpp */,
-				AA8D67DB1322D760000F0763 /* testAppDrawFuncs.cpp */,
 				E4B69E1F0A3A1BDC003C02F2 /* testApp.h */,
 				AABDF41612E9E16F00218FE6 /* povImage.h */,
 				AABDF41712E9E16F00218FE6 /* povImage.cpp */,
@@ -853,17 +879,17 @@
 			files = (
 				E4B69E200A3A1BDC003C02F2 /* main.cpp in Sources */,
 				E4B69E210A3A1BDC003C02F2 /* testApp.cpp in Sources */,
-				AABDF36212E9CFAB00218FE6 /* ofInterCustom.cpp in Sources */,
 				AABDF41812E9E16F00218FE6 /* povImage.cpp in Sources */,
-				AA8D67DC1322D760000F0763 /* testAppDrawFuncs.cpp in Sources */,
 				AA8D6ED113253F28000F0763 /* ofxDirList.cpp in Sources */,
 				AA9C32C21338FCF000CB0F81 /* ofxThread.cpp in Sources */,
 				AA5115041486E13100BDCD7D /* controlBar.cpp in Sources */,
 				AAF372251487DA2E00E5B730 /* imageArea.cpp in Sources */,
 				AAF372541487E25C00E5B730 /* dallasEng.cpp in Sources */,
 				AAF37543148D6A1D00E5B730 /* uploadModule.cpp in Sources */,
-				AAF37594148E786400E5B730 /* toolSelect.cpp in Sources */,
-				AAF375B8148E863C00E5B730 /* drawToolBar.cpp in Sources */,
+				AAF378C2148FFC6900E5B730 /* drawToolBar.cpp in Sources */,
+				AAF378C3148FFC6900E5B730 /* toolSelect.cpp in Sources */,
+				AAF378C6148FFC9D00E5B730 /* predefBar.cpp in Sources */,
+				AAF37AAB14916F2800E5B730 /* howItWorks.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

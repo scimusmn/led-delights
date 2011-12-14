@@ -14,6 +14,7 @@
 
 #include "imageArea.h"
 #include "uploadModule.h"
+#include "howItWorks.h"
 
 #include "dallasEng.h"
 
@@ -30,6 +31,10 @@ protected:
   uploadModule upload;
   
   povImage drawImage;
+  
+  ofFont label;
+  
+  demonstration HIW;
 public:
   void setup(imageArea & img);
   void draw(int x, int y);
@@ -38,6 +43,7 @@ public:
   void setAvailableButtons();
   bool clickDown(int x, int y, int button=0);
   bool clickUp();
+  void drag(int _x, int _y);
   bool mouseLockout(int button);
   ledControlMode getMode(){ return mode;}
 };

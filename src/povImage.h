@@ -136,6 +136,7 @@ public:
 	void newImage(string filename, bool anm=false);
 	void draw(int _x, int _y);
 	bool clickDown(int _x, int _y);
+  bool clickUp();
 	void setSelected(int i);
   povImage & selected(){ return images[nSelected]; }
 	povImage & operator[](int i);

@@ -15,7 +15,7 @@
 #include "povImage.h"
 
 enum ledControlMode {
-  LED_HOME, LED_DRAW, LED_PREDEF, LED_DEMO
+  LED_HOME, LED_DEMO, LED_DRAW, LED_PREDEF
 };
 
 class imageArea {
