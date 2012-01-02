@@ -19,7 +19,7 @@ void circleSubHatch(int x, int y, int w, int h, int rad, int hatchSpace, int hat
   bCloseShape=false;
   ofSetPolyMode(OF_POLY_WINDING_ABS_GEQ_TWO);
   ofBeginShape();
-  drawHatching(0, 0, ofGetWidth(), ofGetHeight(), 15,1);
+  drawHatching(0, 0, ofGetWidth(), ofGetHeight(), 75,3);
   ofNextContour();
   for (int i = 0; i < 80; i++){
     float anglef = ((float)i / 79.0f) * TWO_PI;
