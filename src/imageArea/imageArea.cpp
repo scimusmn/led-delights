@@ -55,6 +55,11 @@ void imageArea::setup()
   mousePointer.loadImage("pointer.png");
 }
 
+void imageArea::update()
+{
+  if(pImage->bAnimation&&mode==LED_PREDEF) anim.idleMovie();
+}
+
 void imageArea::recaptureImage()
 {
   bCapture=true;
@@ -62,8 +67,15 @@ void imageArea::recaptureImage()
 
 void imageArea::changeImage(povImage & img)
 {
-  pImage=&img;
-  image=&img.image;
+  if(pImage!=&img){
+    pImage=&img;
+    image=&img.image;
+    if (img.bAnimation) {
+      anim.loadMovie("upload/images/predefined/"+img.file);
+      cout << img.file << " is the filename\n";
+      anim.play();
+    }
+  }
 }
 
 void imageArea::changeDrawSize(double sz)
@@ -117,7 +129,8 @@ void imageArea::draw(int _x, int _y, int _w, int _h)
 {
   x=_x,y=_y, w=_w,h=_h;
   ofSetColor(white);
-  if(image) image->draw(int(x+w/2-radius()), int(y+h/2-radius()),int(radius()*2),int(radius()*2));
+  if(image&&pImage&&!pImage->bAnimation) image->draw(int(x+w/2-radius()), int(y+h/2-radius()),int(radius()*2),int(radius()*2));
+  else if(pImage&&pImage->bAnimation) anim.draw(int(x+w/2-radius()), int(y+h/2-radius()),int(radius()*2),int(radius()*2));
   if(bDrawing) drawTool();
   if(bFill){
     ofSetColor(drawColor);
@@ -135,7 +148,13 @@ void imageArea::draw(int _x, int _y, int _w, int _h)
   ofSetColor(black);
   circleSubHatch(x,y,w,h,radius(),15,1);
   ofSetColor(yellow);
-  ofRing(x+w/2, y+h/2, radius()-2, radius()+2);
+  ofPushStyle();
+  ofEnableSmoothing();
+  ofSetLineWidth(4);
+  ofSetCircleResolution(90);
+  ofNoFill();
+  ofCircle(x+w/2, y+h/2, radius());
+  ofPopStyle();
 }
 
 void imageArea::drawForeground()

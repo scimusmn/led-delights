@@ -21,24 +21,29 @@ void testApp::setup(){
 
 //--------------------------------------------------------------
 void testApp::update(){
-	
+	area.update();
 }
 
 //--------------------------------------------------------------
 void testApp::draw(){
   
-  if(bar.getMode()>LED_DEMO) area.draw(0,bar.y+bar.h,ofGetWidth(),ofGetHeight()-(bar.y+bar.h)+2);
+  //if(bar.getMode()>LED_DEMO) area.draw(0,bar.y+bar.h,ofGetWidth(),ofGetHeight()-(bar.y+bar.h)+2);
+  if(bar.getMode()==LED_DRAW) area.draw(tBar.w,title.y+title.h,ofGetWidth()-tBar.w,ofGetHeight()-(title.y+title.h)+2);
+  if(bar.getMode()==LED_PREDEF) area.draw(pBar.w,title.y+title.h,ofGetWidth()-pBar.w,ofGetHeight()-(title.y+title.h)+2);
+  if(bar.getMode()==LED_PREDEF) ;
   
   bar.draw(0, title.y+title.h);
   
-  if(bar.getMode()==LED_DRAW) tBar.draw(0,bar.y+bar.h);
-  if(bar.getMode()==LED_PREDEF) pBar.draw(0,bar.y+bar.h);
+  if(bar.getMode()==LED_DRAW) tBar.draw(0,title.y+title.h);
+  if(bar.getMode()==LED_PREDEF) pBar.draw(0,title.y+title.h);
   
   bar.drawForeground();
   if(bar.getMode()==LED_DRAW) tBar.drawForeground();
   area.drawForeground();
   
-  title.draw("Upload images to the wheel",0,0);
+  string ttl=((bar.getMode()==LED_DRAW)?"DRAW YOUR OWN IMAGE FOR THE WHEEL":(bar.getMode()==LED_PREDEF)?"CHOOSE AN IMAGE TO SEND TO THE WHEEL":(bar.getMode()==LED_HOME)?"LED DELIGHTS":"HOW IT WORKS");
+  
+  title.draw(ttl,0,0);
 }
 
 //--------------------------------------------------------------
@@ -72,7 +77,7 @@ void testApp::mousePressed(int x, int y, int button){
 void testApp::mouseReleased(int x, int y, int button){
   area.clickUp();
   tBar.clickUp();
-  pBar.clickDown(x, y);
+  pBar.clickUp();
   bar.clickUp();
 }
 

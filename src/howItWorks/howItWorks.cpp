@@ -8,7 +8,6 @@
  */
 
 #include "howItWorks.h"
-#include "dallasEng.h"
 
 #define rotAng(x) ((rotateCnt+segAng*x)%360)
 
@@ -30,6 +29,19 @@ demonstration::demonstration()
   count=0,rotateCnt=360;
   
   sld.setup(30, 30);
+  
+  pad.x=pad.y=40;
+  
+  label.loadFont("fonts/Din.ttf");
+  label.setSize(17);
+  label.setMode(OF_FONT_TOP);
+  
+  home.setup("Return to Home", 25);
+}
+
+void demonstration::setup(imageArea * img)
+{
+  image=img;
 }
 
 void demonstration::drawUnfold()
@@ -97,7 +109,7 @@ void demonstration::drawImageRotate()
     ofLine(unfldPnt.x+i*10, unfldPnt.y, unfldPnt.x+i*10, unfldPnt.y+unfold.height);
   }
   double perc=1-sld.getPercent();
-  if(perc<.03) perc=.03;
+  if(perc<.1) perc=.1;
   ofRect(unfldPnt.x, unfldPnt.y, unfold.width, 20);
   if(frame.justExpired()&&rotateCnt<3600&&bRunning){
     frame.set(perc*1/20.);
@@ -144,11 +156,12 @@ void demonstration::drawImageRotate()
 //  }
   
   ofSetColor(black);
+  ofSetCircleResolution(90);
   ofCircle(x+w/2-spiral.width, y+h/3, spiral.width/2);
   if(firstTime) persist.grabScreen(x+w/2-spiral.width*3/2., int(y+h/3-spiral.width/2), persist.width, persist.height),firstTime=false;
   ofSetColor(white);
-  persist.draw(x+w/2-spiral.width*3/2., int(y+h/3-spiral.width/2));
-  ofSetColor(black.opacity(perc*1/12.));
+  persist.draw(int(x+w/2-spiral.width*3/2.), int(y+h/3-spiral.width/2));
+  ofSetColor(black.opacity(perc*1/20.));
   ofCircle(x+w/2-spiral.width, y+h/3, spiral.width/2+3);
   for (unsigned int i=0; i<segment.size(); i++) {
     ofPushMatrix();
@@ -158,7 +171,8 @@ void demonstration::drawImageRotate()
     segment[i].draw(0,0,-segment[i].width,segment[i].height);
     ofPopMatrix();
   }
-  persist.grabScreen(x+w/2-spiral.width*3/2., int(y+h/3-spiral.width/2), persist.width, persist.height);
+  ofSetCircleResolution(40);
+  persist.grabScreen(int(x+w/2-spiral.width*3/2.), int(y+h/3-spiral.width/2), persist.width, persist.height);
   
   
   if(cnt>=6){
@@ -183,24 +197,65 @@ void demonstration::drawImageRotate()
 
 void demonstration::draw(int _x, int _y, int _w, int _h)
 {
-  x=_x, y=_y, w=_w, h=_h;
+  side.x=_x;
+  x=_x+side.width, side.y=y=_y, w=_w-side.width, side.height=h=_h;
   ofSetColor(gray);
   ofRect(x, y, w, h);
   ofSetColor(black);
-  drawHatching(x,y,w,h, 15,1);
+  //drawHatching(x,y,w,h, 15,1);
+  
+  drawSideBar();
   
 	if(bRunning&&!bUnfoldDone) drawUnfold();
   if(bRunning&&bUnfoldDone&&!bMoved) drawImageMove();
   if(bRunning&&bMoved) drawImageRotate();
 }
 
+void demonstration::drawSideBar()
+{
+  string text="Steps to project the image\non the wheel:\n";
+  string add[7]={"1. A computer scans your color\nartwork and turns it into\n a series of radial lines,\nlike spokes on a bicycle wheel.",\
+  "2. Each line contains a\nseries of dots, or pixels.\nThe scanner assigns each\npixel a numerical value\nrepresenting combinations\n of red, green and blue.",\
+  "3. The computer unfolds\n the wheel of radial lines\n into a rectangular array of\nvertical lines of data.",\
+  "4. The computer sends this\n array of color-coded pixels\nto the microprocessor that controls\nthe four lines of LEDs\non the bicycle wheel.",\
+  "5. The microprocessor receives\nan electrical pulse\nevery time a line of LEDs passes\nthe magnet at the\nbase of the wheel.",
+  "6. The microprocessor uses this\npulse to calculate the\nposition and speed of\nthe rotating bicycle wheel.\nIt then sends lines of the coded\n artwork to the lines\nof LEDs at the right time.",
+  "7. Although the LEDs rapidly\nblink on and off,\nyour eye merges the flashes\ninto a solid image."};
+  side.width=label.stringWidth(text+add[0])+pad.x*2;
+  
+  ofSetColor(gray);
+  ofRect(side);
+  ofRectangle r(side.x+side.width, side.y, 10, side.height);
+  ofRect(r);
+  
+  ofSetColor(black);
+  drawHatching(side.x, side.y, side.width, side.height, 20, 20);
+  //ofRect(titleArea);
+  //drawBorder(titleArea);
+  drawBorder(side);
+  drawBorder(r);
+  
+  ofRectangle botBox(side.x,side.y+side.height-(home.h+pad.y*2),side.width,home.h+pad.y*2);
+  ofSetColor(gray);
+  ofRect(botBox);
+  drawBorder(botBox);
+  
+  home.draw(botBox.x+(botBox.width-home.w)/2, botBox.y+(botBox.height-home.h)/2);
+  
+  ofSetColor(yellow);
+  label.drawString(text+add[0], side.x+pad.x,side.y+(side.height-label.stringHeight(text+add[0])-botBox.height)/2);
+}
+
 bool demonstration::clickDown(int _x, int _y)
 {
+  if(home.clickDown(_x, _y))
+    image->mode=LED_HOME;
   return sld.clickDown(_x, _y);
 }
 
 bool demonstration::clickUp()
 {
+  home.clickUp();
   return sld.clickUp();
 }
 

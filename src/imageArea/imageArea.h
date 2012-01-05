@@ -22,6 +22,9 @@ class imageArea {
 protected:
   povImage * pImage;
   ofImage * image;
+  
+  ofVideoPlayer anim;
+  
   bool bCapture;
   
   bool bDrawing;
@@ -37,6 +40,7 @@ public:
   ledControlMode mode;
   double x,y,w,h;
   void setup();
+  void update();
   void recaptureImage();
   void captureScreen();
   void changeImage(povImage & img);

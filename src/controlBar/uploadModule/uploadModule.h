@@ -24,11 +24,17 @@ protected:
   //progRead prog;
   bool bRunning;
   ofTimer uploaded;
+  ofButton button;
+  
+  ofPoint pad;
 public:
+  double x,y,w,h;
   void setup(imageArea * img);
   void upload();
+  void draw(int _x, int _y);
   bool drawForeground();
   bool isUploading();
   void stopUpload();
   bool clickDown(int _x, int _y);
+  bool clickUp();
 };

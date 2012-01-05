@@ -15,72 +15,58 @@ void controlBar::setup(imageArea & img)
 {
   image=&img;
   
-  mode=LED_HOME;
+  image->mode=LED_HOME;
   
   label.loadFont("fonts/Din.ttf");
   label.setSize(24);
   label.setMode(OF_FONT_CENTER);
   label.setMode(OF_FONT_TOP);
   
-  redo.setup(64, 64, "images/redo.png");
-	undo.setup(64,64,"images/undo.png");
+  drawB.setup(256, OF_HOR, "images/BigPaint.png");
+	demo.setup(256,OF_HOR, "images/bigHow.png");
+	predef.setup(256, OF_HOR, "images/BigImage.png");
   
-  drawB.setup(256, OF_HOR, "images/pencil.jpg");
-	demo.setup(256,OF_HOR, "images/circuit.jpg");
-	predef.setup(256, OF_HOR, "images/uploadArrow.jpg");
-  
-  home.setup("New user?", 25);
-  
-  uploadBut.setup("Send image to wheel", 25);
+  home.setup("Return to Home", 25);
   
   drawImage.loadImage("upload/images/0.jpg");
   
   upload.setup(image);
-  
-  toolBar::setup(OF_HOR);
-  area.width=w=ofGetWidth();
-  addSegment(20, &undo,&redo);
-  addSegment(0, &uploadBut);
-  addSegment(30, &home);
+  HIW.setup(image);
   
   image->changeImage(drawImage);
+  
+  pad.x=pad.y=40;
 }
 
 void controlBar::draw(int _x, int _y)
 {
   x=_x,y=_y;
-  ofSetColor(gray);
-  ofRect(area);
-  ofSetColor(black);
-  drawHatching(area.x, area.y, area.width, area.height, 50, 50);
-  objHolder::draw(_x,_y);
+  if(getMode()>=LED_DRAW) upload.draw(ofGetWidth()-upload.w, ofGetHeight()-upload.h);
 }
 
 void controlBar::drawForeground()
 {
   int mouseX=ofGetAppPtr()->mouseX;
   int mouseY=ofGetAppPtr()->mouseY;
-  if(mode==LED_HOME){
+  if(getMode()==LED_HOME){
     ofSetColor(black.opacity(.85));
     ofRectangle r(x,y,ofGetWidth(),ofGetHeight());
     ofRect(r);
     /*ofSetColor(black);
     drawHatching(r.x, r.y, r.width, r.height, 15, 1);*/
-    predef.draw((ofGetWidth()/2-predef.w)/2, (ofGetHeight()-predef.h)/2);
+    predef.draw((ofGetWidth()/3-predef.w)/2, (ofGetHeight()-predef.h)/2);
     label.drawString("Choose image to upload", predef.x+predef.w/2, predef.y+predef.h+10);
     drawB.draw((ofGetWidth()-drawB.w)/2,(ofGetHeight()-drawB.h)/2);
     label.drawString("Draw image to upload", drawB.x+drawB.w/2, drawB.y+drawB.h+10);
-    demo.draw((3*ofGetWidth()/2-demo.w)/2,(ofGetHeight()-demo.h)/2);
+    demo.draw((5*ofGetWidth()/3-demo.w)/2,(ofGetHeight()-demo.h)/2);
     label.drawString("See how it works", demo.x+demo.w/2, demo.y+demo.h+10);
+    label.setMode(OF_FONT_LEFT);
     ofSetColor(yellow);
-    ofNoFill();
-    ofRect(predef.x,predef.y,predef.w,predef.h);
-    ofRect(drawB.x,drawB.y,drawB.w,drawB.h);
-    ofRect(demo.x, demo.y, demo.w, demo.h);
-    ofFill();
+    label.drawString("Choose an option", x+pad.x, predef.y-label.stringHeight("Kj")-pad.y);
+    label.setMode(OF_FONT_CENTER);
   }
-  if(mode==LED_DEMO){
-    HIW.draw(x, y+h+1, w, ofGetHeight()-(y+h-1));
+  if(getMode()==LED_DEMO){
+    HIW.draw(x, y+h+1, ofGetWidth(), ofGetHeight()-(y+h-1));
   }
   upload.drawForeground();
 }
@@ -92,31 +78,22 @@ void controlBar::update()
 
 void controlBar::setAvailableButtons()
 {
-  if(mode==LED_DRAW){
-    redo.setAvailable(drawImage.redoAvailable());
-    undo.setAvailable(drawImage.undoAvailable());
-  }
 }
 
 bool controlBar::clickDown(int _x, int _y, int button)
 {
-  if(mode!=LED_HOME){
-    if(home.clickDown(_x, _y)) image->mode=mode=LED_HOME;
+  if(getMode()!=LED_HOME){
+    if(home.clickDown(_x, _y)) image->mode=LED_HOME;
   }
   else{
-    if(drawB.clickDown(_x, _y)) image->mode=mode=LED_DRAW, image->changeImage(drawImage);
-    else if(demo.clickDown(_x, _y)) image->mode=mode=LED_DEMO, HIW.start();
-    else if(predef.clickDown(_x, _y)) image->mode=mode=LED_PREDEF;
+    if(drawB.clickDown(_x, _y)) image->mode=LED_DRAW, image->changeImage(drawImage);
+    else if(demo.clickDown(_x, _y)) image->mode=LED_DEMO, HIW.start();
+    else if(predef.clickDown(_x, _y)) image->mode=LED_PREDEF;
   }
-  if(mode==LED_DRAW){
-    if(undo.clickDown(_x, _y)) drawImage.undo();
-    else if(redo.clickDown(_x, _y)) drawImage.redo();
-  }
-  if(mode==LED_DRAW||mode==LED_PREDEF) 
-    if(uploadBut.clickDown(_x, _y)) upload.upload();
-  as_objHldr(objs[0])->setDrawing(mode==LED_DRAW);
+  if(getMode()==LED_DRAW||getMode()==LED_PREDEF) 
+    if(upload.clickDown(_x, _y));
   
-  if(mode==LED_DEMO) HIW.clickDown(_x, _y);
+  if(getMode()==LED_DEMO) HIW.clickDown(_x, _y);
 }
 
 bool controlBar::clickUp()
@@ -129,8 +106,7 @@ bool controlBar::clickUp()
   
   HIW.clickUp();
   
-  undo.clickUp();
-  redo.clickUp();
+  upload.clickUp();
   
   uploadBut.clickUp();
   
@@ -145,4 +121,9 @@ void controlBar::drag(int _x, int _y)
 bool controlBar::mouseLockout(int button)
 {
   
+}
+
+ledControlMode controlBar::getMode()
+{ 
+  return image->mode;
 }

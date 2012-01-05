@@ -11,6 +11,8 @@
 
 #include "ofMain.h"
 #include "ofExtended.h"
+#include "dallasEng.h"
+#include "imageArea.h"
 
 class demonstration {
 protected:
@@ -28,12 +30,21 @@ protected:
   ofPoint unfldPnt;
   
   ofSlider sld;
+  ofPoint pad;
+  
+  ofFont label;
+  
+  dallasButton home;
+  imageArea * image;
 public:
   double x, y,w,h;
+  ofRectangle side;
   demonstration();
+  void setup(imageArea * img);
   void drawUnfold();
   void drawImageMove();
   void drawImageRotate();
+  void drawSideBar();
   void draw(int _x, int _y, int _w, int _h);
   bool clickDown(int _x, int _y);
   bool clickUp();

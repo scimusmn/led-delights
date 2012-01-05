@@ -82,12 +82,14 @@ void povImage::saveState()
 
 void povImage::undo()
 {
-	image=*states.undoState();
+  if(undoAvailable())
+    image=*states.undoState();
 }
 
 void povImage::redo()
 {
-	image=*states.redoState();
+  if(redoAvailable())
+    image=*states.redoState();
 }
 
 bool povImage::undoAvailable()
@@ -145,8 +147,8 @@ void povImages::loadImages(string dir)
   h=pad.y;
   for (unsigned int i=0; i<images.size(); i++) {
     images[i].w=images[i].h=75;
-    w=images[i].w+pad.x*2;
-    h+=images[i].h+pad.y;
+    w=2*(images[i].w+pad.x*2);
+    h=images.size()/2*images[i].h+(images.size()/2+1)*pad.y;
   }
   setSelected(0);
 }
@@ -175,12 +177,13 @@ void povImages::writePlaylist(string filename)
 void povImages::draw(int _x, int _y)
 {
 	x=_x,y=_y;
-	ofSetColor(0,0,0,128);
-	ofRect(x, y, w, h);
+	ofSetColor(white*.3);
+	ofRect(x+2, y, w/2-4, h);
+	ofRect(x+w/2+2, y, w/2-4, h);
   int yPos=y+pad.y;
 	for (unsigned int i=0; i<images.size(); i++) {
-		images[i].draw(x+(w-images[i].w)/2,yPos);
-    yPos+=images[i].h+pad.y;
+		images[i].draw(x+pad.x+(i%2)*w/2,yPos);
+    yPos+=(images[i].h+pad.y)*(i%2);
 	}
 }
 

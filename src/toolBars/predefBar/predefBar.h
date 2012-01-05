@@ -13,6 +13,7 @@
 #include "ofExtended.h"
 #include "imageArea.h"
 #include "povImage.h"
+#include "dallasEng.h"
 
 class predefBar : public ofInterObj {
 protected:
@@ -22,6 +23,10 @@ protected:
   ofPoint pad;
   
   ofRectangle area;
+  
+  ofFont label;
+  
+  dallasButton home;
 public:
   predefBar();
   void setup(imageArea & img);

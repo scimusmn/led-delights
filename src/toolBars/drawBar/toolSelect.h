@@ -45,6 +45,7 @@ protected:
   ofPoint pad;
 public:
   sizeChoose();
+  void setup(int h);
   void draw(int _x, int _y);
   bool clickDown(int _x,int _y);
   bool clickUp();

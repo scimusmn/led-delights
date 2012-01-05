@@ -20,9 +20,16 @@ protected:
   
   imageArea * image;
   
+  ofFont label;
+  
   ofPoint pad;
   
   ofRectangle area;
+  
+  ofButton undo;
+  ofButton redo;
+  
+  dallasButton home;
 public:
   drawToolBar();
   void setup(imageArea & img);

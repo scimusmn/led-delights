@@ -13,7 +13,7 @@ extern ofColor white,black,gray,blue,red,orange,yellow;
 
 palette::palette()
 {
-  pal.loadImage("images/palette.jpg");
+  pal.loadImage("images/palette2.jpg");
   w=pal.width, h=pal.height;
 }
 
@@ -67,6 +67,7 @@ void palette::resize(int _w, int _h)
 sizeBut::sizeBut(int radius)
 {
   w=radius*2, h=w;
+  bChosen=false;
 }
 
 void sizeBut::draw(int _x, int _y)
@@ -74,30 +75,44 @@ void sizeBut::draw(int _x, int _y)
   x=_x, y=_y;
   ofColor k = ofGetStyle().color;
   ofCircle(x+w/2, y+h/2, w/2);
+  ofPushStyle();
   ofNoFill();
-  if(bChosen){
-    ofSetColor(yellow);
-    ofRect(x, y, w, h);
-  }
-  ofSetColor(white*.3);
+  ofSetColor(white*.2);
   ofSetLineWidth(3);
   ofCircle(x+w/2, y+h/2, w/2);
+  ofEnableSmoothing();
+  if(bChosen){
+    ofSetColor(yellow);
+    ofCircle(x+w/2, y+h/2, w/2);
+  }
+  ofPopStyle();
+  /*ofDisableSmoothing();
   ofSetLineWidth(1);
   ofFill();
-  ofSetColor(k);
+  ofSetColor(k);*/
 }
 
 sizeChoose::sizeChoose()
 {
   radius=0;
   selected=0;
-  pad.x=pad.y=20;
+  pad.x=pad.y=10;
+}
+
+void sizeChoose::setup(int hgt)
+{
+  double n=5;
+  //int maxSz=30;
+  //double maxSz=2*((hgt/(numSz+1.))-pad.y);
   h=pad.y;
-  for (unsigned int i=0; i<5; i++) {
-    sizes.push_back(sizeBut(10+10*i));
-    h+=sizes.back().h+pad.y;
+  double m=(hgt-n*pad.y)/(2*(n-(n-1)/2));
+  for (unsigned int i=0; i<n; i++) {
+    sizes.push_back(sizeBut(m-(m/n)*i));
+    h+=sizes.back().h;
   }
-  if(sizes.size()) w=sizes.back().w+pad.x*2;
+  if(h+pad.y*n>hgt) pad.y-=1;
+  h=hgt;
+  if(sizes.size()) w=sizes.front().w+pad.x*2;
 }
 
 void sizeChoose::draw(int _x, int _y)
@@ -105,11 +120,11 @@ void sizeChoose::draw(int _x, int _y)
   x=_x, y=_y;
   int yPos=y+pad.y;
   ofColor k=ofGetStyle().color;
-  ofSetColor(0, 0, 0,128);
+  ofSetColor(white*.3);
   ofRectangle r(x,y,w,h);
   ofRect(r);
-  drawBorder(r);
-  ofSetColor(k);
+  //drawBorder(r);
+  ofSetColor(white*.6);
   for (unsigned int i=0; i<sizes.size(); i++) {
     sizes[i].draw(x+(w-sizes[i].w)/2,yPos);
     yPos+=sizes[i].h+pad.y;

@@ -20,9 +20,7 @@
 
 class controlBar : public toolBar {
 protected:
-  dallasButton uploadBut;
-  ofButton undo;
-  ofButton redo;
+  ofButton uploadBut;
   ofButton drawB,demo,predef;
   dallasButton home;
   imageArea * image;
@@ -35,6 +33,8 @@ protected:
   ofFont label;
   
   demonstration HIW;
+  
+  ofPoint pad;
 public:
   void setup(imageArea & img);
   void draw(int x, int y);
@@ -45,5 +45,5 @@ public:
   bool clickUp();
   void drag(int _x, int _y);
   bool mouseLockout(int button);
-  ledControlMode getMode(){ return mode;}
+  ledControlMode getMode();
 };
