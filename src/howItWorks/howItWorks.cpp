@@ -108,8 +108,8 @@ void demonstration::drawImageRotate()
   for (int i=0; i<unfold.width/10.; i++) {
     ofLine(unfldPnt.x+i*10, unfldPnt.y, unfldPnt.x+i*10, unfldPnt.y+unfold.height);
   }
-  double perc=1-sld.getPercent();
-  if(perc<.1) perc=.1;
+  double perc=1.-sld.getPercent();
+  if(perc<=.2) perc=.2;
   ofRect(unfldPnt.x, unfldPnt.y, unfold.width, 20);
   if(frame.justExpired()&&rotateCnt<3600&&bRunning){
     frame.set(perc*1/20.);
@@ -161,7 +161,7 @@ void demonstration::drawImageRotate()
   if(firstTime) persist.grabScreen(x+w/2-spiral.width*3/2., int(y+h/3-spiral.width/2), persist.width, persist.height),firstTime=false;
   ofSetColor(white);
   persist.draw(int(x+w/2-spiral.width*3/2.), int(y+h/3-spiral.width/2));
-  ofSetColor(black.opacity(perc*1/20.));
+  ofSetColor(black.opacity(sqrt(perc)*1/10.));
   ofCircle(x+w/2-spiral.width, y+h/3, spiral.width/2+3);
   for (unsigned int i=0; i<segment.size(); i++) {
     ofPushMatrix();
