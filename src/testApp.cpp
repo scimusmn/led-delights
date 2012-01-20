@@ -21,7 +21,7 @@ void testApp::setup(){
 
 //--------------------------------------------------------------
 void testApp::update(){
-	area.update();
+	if(bar.getMode()==LED_PREDEF) area.update();
 }
 
 //--------------------------------------------------------------
@@ -30,7 +30,7 @@ void testApp::draw(){
   //if(bar.getMode()>LED_DEMO) area.draw(0,bar.y+bar.h,ofGetWidth(),ofGetHeight()-(bar.y+bar.h)+2);
   if(bar.getMode()==LED_DRAW) area.draw(tBar.w,title.y+title.h,ofGetWidth()-tBar.w,ofGetHeight()-(title.y+title.h)+2);
   if(bar.getMode()==LED_PREDEF) area.draw(pBar.w,title.y+title.h,ofGetWidth()-pBar.w,ofGetHeight()-(title.y+title.h)+2);
-  if(bar.getMode()==LED_PREDEF) ;
+  //if(bar.getMode()==LED_PREDEF) ;
   
   bar.draw(0, title.y+title.h);
   

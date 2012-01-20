@@ -36,6 +36,8 @@ protected:
   ofPoint prevPoint;
   
   ofImage mousePointer;
+  
+  string animName;
 public:
   ledControlMode mode;
   double x,y,w,h;

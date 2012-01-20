@@ -53,11 +53,12 @@ void imageArea::setup()
   image=0;
   bCapture=bDrawing=bFill=bChanged=false;
   mousePointer.loadImage("pointer.png");
+  animName="Default";
 }
 
 void imageArea::update()
 {
-  if(pImage->bAnimation&&mode==LED_PREDEF) anim.idleMovie();
+  if(pImage->bAnimation&&anim.isLoaded()&&mode==LED_PREDEF) anim.idleMovie();// cout<< anim.  << "  is the movie position\n";
 }
 
 void imageArea::recaptureImage()
@@ -70,10 +71,12 @@ void imageArea::changeImage(povImage & img)
   if(pImage!=&img){
     pImage=&img;
     image=&img.image;
-    if (img.bAnimation) {
+    if (img.bAnimation&&img.file!=animName) {
+      anim.stop();
       anim.loadMovie("upload/images/predefined/"+img.file);
-      cout << img.file << " is the filename\n";
+      animName=img.file;
       anim.play();
+      image=0;
     }
   }
 }
@@ -130,7 +133,7 @@ void imageArea::draw(int _x, int _y, int _w, int _h)
   x=_x,y=_y, w=_w,h=_h;
   ofSetColor(white);
   if(image&&pImage&&!pImage->bAnimation) image->draw(int(x+w/2-radius()), int(y+h/2-radius()),int(radius()*2),int(radius()*2));
-  else if(pImage&&pImage->bAnimation) anim.draw(int(x+w/2-radius()), int(y+h/2-radius()),int(radius()*2),int(radius()*2));
+  else if(anim.isLoaded()&&pImage&&pImage->bAnimation) anim.draw(int(x+w/2-radius()), int(y+h/2-radius()),int(radius()*2),int(radius()*2));
   if(bDrawing) drawTool();
   if(bFill){
     ofSetColor(drawColor);

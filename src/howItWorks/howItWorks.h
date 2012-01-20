@@ -14,12 +14,41 @@
 #include "dallasEng.h"
 #include "imageArea.h"
 
+enum demoMode {
+  STPPD,SELECT,UNFLD,MVING,ROTATING
+};
+
+demoMode& operator++(demoMode& d, int);
+demoMode& operator--(demoMode& d, int);
+
+class animCell {
+public:
+  ofPoint orig;
+  ofPoint pos;
+  ofPoint end;
+  ofImage cell;
+  ofTimer frame;
+  animCell(ofPoint pnt,int w, int h);
+  void draw();
+  void beginAnimation(ofPoint end, float time);
+};
+
 class demonstration {
 protected:
   bool bRunning;
-  bool bUnfoldDone,bMoved,bRotated;
+  
+  demoMode mode;
+  bool bWait;
   ofImage	spiral;
 	ofImage unfold;
+  
+  vector<animCell> anim;
+  int animIndex;
+  
+  bool bMovedBeforeUnfld;
+  
+  ofButton prev;
+  ofButton next;
   
   ofImage persist;
   vector<ofImage> segment;
@@ -45,6 +74,8 @@ public:
   void drawImageMove();
   void drawImageRotate();
   void drawSideBar();
+  void drawSelectImage();
+  void drawMagnetPosition();
   void draw(int _x, int _y, int _w, int _h);
   bool clickDown(int _x, int _y);
   bool clickUp();
