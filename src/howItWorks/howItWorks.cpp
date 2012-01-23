@@ -30,14 +30,16 @@ demoMode& operator--(demoMode& d, int)
 animCell::animCell(ofPoint pnt,int w, int h)
 {
   orig=pnt;
-  cell.allocate(w, h, OF_IMAGE_COLOR);
+  cell.allocate(w, h, OF_IMAGE_COLOR_ALPHA);
   cell.grabScreen(orig.x, orig.y, w, h);
   frame.set(1);
   frame.pause();
 }
+
 void animCell::draw()
 {
-  pos=orig+(end-orig)*frame.getPercent();
+  pos=orig+(end-orig)*frame.getPercent()-sin(frame.getPercent()*M_PI)*ofPoint(100,0);
+  ofSetColor(white);
   cell.draw(pos.x, pos.y);
 }
 
@@ -85,8 +87,24 @@ void demonstration::setup(imageArea * img)
   bMovedBeforeUnfld=false;
 }
 
+void header(string hdr, ofFont & label, int x, int y, int w, int h)
+{
+  ofSetLineWidth(3);
+  ofSetColor(yellow);
+  ofLine(x, y, x+w, y);
+  
+  label.setSize(24);
+  label.drawString(hdr, x+20, y+10);
+  label.setSize(17);
+  ofSetLineWidth(1);
+  
+  ofLine(x, y+20+label.stringHeight(hdr), x+w, y+20+label.stringHeight(hdr));
+}
+
 void demonstration::drawSelectImage()
 {
+  header("On computer", label, x, y, w, h);
+  
   unfldPnt.x=x+w/2;
   unfldPnt.y=y+(h-spiral.height)/2;
   ofSetColor(white);
@@ -103,6 +121,7 @@ void demonstration::drawMagnetPosition()
 
 void demonstration::drawUnfold()
 {
+  header("On computer", label, x, y, w, h);
   if(!bMovedBeforeUnfld){
     unfldPnt.x=x+w/2-frame.getPercent()*(M_PI*spiral.width/2);
     unfldPnt.y=y+(h-spiral.height)/2;
@@ -146,29 +165,36 @@ void demonstration::drawUnfold()
 
 void demonstration::drawImageMove()
 {
-  /*ofSetColor(255, 255, 255);
-	if(frame.running()) unfold.draw(unfldPnt.x,unfldPnt.y+spiral.height*frame.getElapsedf());
-  else if (bWait) unfold.draw(unfldPnt.x,unfldPnt.y+spiral.height);
-  if(frame.justExpired()) bWait=true,frame.set(1/120.),frame.pause();*/
-  
-  ofSetColor(white);
-  unfold.draw(unfldPnt.x, unfldPnt.y);
-  ofSetColor(black);
-  ofSetLineWidth(1);
-  for (int i=0; i<unfold.height/10.; i++) {
-    ofLine(unfldPnt.x, unfldPnt.y+i*10, unfldPnt.x+unfold.width, unfldPnt.y+i*10);
-  }
-  for (int i=0; i<unfold.width/10.; i++) {
-    ofLine(unfldPnt.x+i*10, unfldPnt.y, unfldPnt.x+i*10, unfldPnt.y+unfold.height);
-  }
-  
-  if(!anim.size()){
+  if(anim.size()==0){
+    ofSetColor(white);
+    unfold.draw(unfldPnt.x, unfldPnt.y);
+    ofSetColor(black);
+    ofSetLineWidth(1);
+    for (int i=0; i<unfold.height/10.; i++) {
+      ofLine(unfldPnt.x, unfldPnt.y+i*10, unfldPnt.x+unfold.width, unfldPnt.y+i*10);
+    }
+    for (int i=0; i<unfold.width/10.; i++) {
+      ofLine(unfldPnt.x+i*10, unfldPnt.y, unfldPnt.x+i*10, unfldPnt.y+unfold.height);
+    }
+    
+    cout << "grabbing screen\n";
     for (int i=0; i<unfold.width/10.; i++) {
       anim.push_back(animCell(ofPoint(unfldPnt.x+i*10,unfldPnt.y),10,unfold.height));
     }
   }
   
-  if(frame.justExpired()) anim[animIndex].beginAnimation(ofPoint(anim[animIndex].orig.x,anim[animIndex].orig.y+spiral.height),1),animIndex++,frame.set(.1),frame.run();
+  header("On computer", label, x, y, w, h);
+  header("On microcontroller on wheel", label, x, unfldPnt.y+unfold.height+80, w, h);
+  
+  
+  if(animIndex<anim.size()&&frame.justExpired()){
+    anim[animIndex].beginAnimation(ofPoint(anim[animIndex].orig.x,anim[animIndex].orig.y+spiral.height),1);
+    animIndex++;
+    cout << animIndex << " is the current frame out of " << anim.size() << endl; 
+    frame.set(.025),frame.run();
+  }
+  
+  if(animIndex>=anim.size()&&frame.justExpired()) bWait=true,cout << "waiting\n";
   
   for (unsigned int i=0; i<anim.size(); i++) {
     anim[i].draw();
@@ -187,6 +213,9 @@ void demonstration::drawImageRotate()
   unfldPnt.y=y+(h+spiral.height)/2;
   
   int segAng=360/segment.size();
+  
+  header("Image displayed on wheel", label, x, y, w, h);
+  header("On microcontroller on wheel", label, x, unfldPnt.y-spiral.height+unfold.height+80, w, h);
   
   ofSetColor(white);
   unfold.draw(unfldPnt.x, unfldPnt.y);
@@ -264,7 +293,11 @@ void demonstration::drawImageRotate()
   }
   
   ofSetColor(white*.6);
-  sld.draw(x+(w-sld.w)/2,y+50,200,10);
+  sld.draw(x+(w-sld.w)/2,y+h/4,200,10);
+  ofSetColor(yellow);
+  label.setMode(OF_FONT_CENTER);
+  label.drawString("Rotation speed", sld.x+sld.w/2, sld.y+sld.h+20);
+  label.setMode(OF_FONT_LEFT);
 }
 
 void demonstration::draw(int _x, int _y, int _w, int _h)
@@ -318,13 +351,38 @@ void demonstration::drawSideBar()
   ofRect(botBox);
   drawBorder(botBox);
   
+  if(bWait&&mode>=ROTATING&&(ofGetElapsedTimeMillis()/250)%2){
+    ofSetColor(yellow);
+    trimmedRect(home.x-5, home.y-5, home.w+10, home.h+10);
+  }
+  
   home.draw(botBox.x+(botBox.width-home.w)/2, botBox.y+(botBox.height-home.h)/2);
+  
   
   ofSetColor(yellow);
   label.drawString(text+add[int(mode)-1], side.x+pad.x,side.y+(side.height-label.stringHeight(text+add[int(mode)-1])-botBox.height)/2);
   
-  if(bWait&&mode>=UNFLD) prev.draw(side.x+40, side.y+side.height-botBox.height-prev.h-20);
-  if(bWait&&mode<ROTATING) next.draw(side.x+side.width-next.w-40, side.y+side.height-botBox.height-next.h-20);
+  if(bWait&&mode>=UNFLD){
+    prev.draw(side.x+40, side.y+side.height-botBox.height-prev.h-20);
+  }
+  if(bWait&&mode<ROTATING){
+    next.draw(side.x+side.width-next.w-40, side.y+side.height-botBox.height-next.h-20);
+    if((ofGetElapsedTimeMillis()/500)%2){
+      ofSetColor(yellow);
+      ofNoFill();
+      ofSetLineWidth(6);
+      ofBeginShape();
+      ofVertex(next.x, next.y);
+      ofVertex(next.x+next.w-3*next.h/4, next.y);
+      ofVertex(next.x+next.w, next.y+next.h/2);
+      ofVertex(next.x+next.w-3*next.h/4, next.y+next.h);
+      ofVertex(next.x, next.y+next.h);
+      ofVertex(next.x, next.y);
+      ofEndShape();
+      ofSetLineWidth(1);
+      ofFill();
+    }
+  }
 }
 
 bool demonstration::clickDown(int _x, int _y)
