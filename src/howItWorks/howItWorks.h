@@ -15,7 +15,7 @@
 #include "imageArea.h"
 
 enum demoMode {
-  STPPD,SELECT,UNFLD,MVING,ROTATING
+  STPPD,SELECT,UNFLD,MVING,MAGNET,ROTATING,SPINNING
 };
 
 demoMode& operator++(demoMode& d, int);
@@ -76,6 +76,7 @@ public:
   void drawSideBar();
   void drawSelectImage();
   void drawMagnetPosition();
+  void drawWheelFrame(int x, int y);
   void draw(int _x, int _y, int _w, int _h);
   bool clickDown(int _x, int _y);
   bool clickUp();

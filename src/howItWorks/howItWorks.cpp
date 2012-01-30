@@ -16,7 +16,7 @@ extern ofColor black, white, gray, yellow, red, blue,orange;
 demoMode& operator++(demoMode& d, int)
 {
   int temp=d;
-  if(d==ROTATING) return d;
+  if(d==SPINNING) return d;
   return d = static_cast<demoMode> (++temp);
 }
 
@@ -112,12 +112,6 @@ void demonstration::drawSelectImage()
   if(frame.justExpired()) bWait=true;
 }
 
-void demonstration::drawMagnetPosition()
-{
-  
-}
-
-
 
 void demonstration::drawUnfold()
 {
@@ -201,11 +195,108 @@ void demonstration::drawImageMove()
   }
 }
 
-ofColor col[16]={orange,red,blue,white,orange,red,blue,white,orange,red,blue,white,orange,red,blue,white};
+ofColor red2(255,0,0);
+ofColor green2(0,255,0);
+ofColor blue2(0,0,255);
+ofColor yellow2(255,255,0);
+
+ofColor col[4]={red2,green2,blue2,yellow2};
 
 double frmTm=1/10.;
 int cnt=0;
+int numSpins=4;
 bool firstTime=true;
+
+void demonstration::drawWheelFrame(int _x, int _y)
+{
+  ofSetColor(black);
+  ofRect(_x-12, _y-2, 24,segment[0].height+20+4);
+  ofSetColor(white*.3);
+  ofRect(_x-10, _y, 20,segment[0].height+20);
+  
+  ofSetColor(black);
+  ofRect(_x-6, y+h/3+segment[0].height*.875, 12,12);
+  ofRing(_x, _y, segment[0].height, segment[0].height+5);
+  ofCircle(_x, _y, 15);
+  
+  for (unsigned int i=0; i<8; i++) {
+    ofPushMatrix();
+    ofTranslate(_x, _y, 0);
+    ofRotate((rotateCnt+(360/8)*i)%360);
+    ofSetColor(black);
+    ofLine(15, 0, 15, segment[0].height);
+    ofLine(-15, 0, -15, segment[0].height);
+    ofRotate(360/16);
+    ofLine(15, 0, 15, segment[0].height);
+    ofLine(-15, 0, -15, segment[0].height);
+    ofPopMatrix();
+  }
+}
+
+void demonstration::drawMagnetPosition()
+{
+  unfldPnt.x=x+(w-M_PI*spiral.width)/2;
+  unfldPnt.y=y+(h+spiral.height)/2;
+  
+  int segAng=360/segment.size();
+  
+  header("Image displayed on wheel", label, x, y, w, h);
+  header("On microcontroller on wheel", label, x, unfldPnt.y-spiral.height+unfold.height+80, w, h);
+  
+  ofSetColor(white);
+  unfold.draw(unfldPnt.x, unfldPnt.y);
+  ofSetColor(white*.2);
+  ofSetLineWidth(1);
+  for (int i=0; i<unfold.height/10.; i++) {
+    ofLine(unfldPnt.x, unfldPnt.y+i*10, unfldPnt.x+unfold.width, unfldPnt.y+i*10);
+  }
+  for (int i=0; i<unfold.width/10.; i++) {
+    ofLine(unfldPnt.x+i*10, unfldPnt.y, unfldPnt.x+i*10, unfldPnt.y+unfold.height);
+  }
+  ofRect(unfldPnt.x, unfldPnt.y, unfold.width, 20);
+  
+  if(frame.justExpired()&&rotateCnt<3600&&bRunning){
+    frame.set(frmTm);
+    rotateCnt-=(360/segment.size())/17.;
+    if(rotateCnt<0){
+      rotateCnt+=360;
+    }
+  }
+  
+  
+  drawWheelFrame(x+w/2-spiral.width,y+h/3);
+  
+  ofSetColor(yellow);
+  label.setMode(OF_FONT_MID);
+  label.drawString("magnet", x+w/2-spiral.width/2, y+h/3+spiral.height/2);
+  label.setMode(OF_FONT_TOP);
+  ofPushStyle();
+  ofSetLineWidth(2);
+  ofEnableSmoothing();
+  ofLine(x+w/2-spiral.width/2, y+h/3+spiral.height/2, x+w/2-spiral.width+6, y+h/3+spiral.height*7/16.);
+  ofPopStyle();
+  
+  for (unsigned int i=0; i<segment.size(); i++) {
+    ofPushMatrix();
+    ofTranslate(x+w/2-spiral.width, y+h/3, 0);
+    ofRotate(rotAng(i));
+    ofSetColor(white*.3);
+    ofRect(segment[i].width/2, segment[i].height/8,-segment[i].width,segment[i].height*7/8);
+    ofRect(segment[i].width/2, segment[i].height/8,-40,20);
+    ofNoFill();
+    ofSetColor(black);
+    ofRect(segment[i].width/2, segment[i].height/8,-segment[i].width,segment[i].height*7/8);
+    ofRect(segment[i].width/2, segment[i].height/8,-40,20);
+    ofFill();
+    if(rotAng(i)<20||rotAng(i)>340){
+      ofSetColor(col[i%4]);
+      ofRect(segment[i].width/2, segment[i].height*7/8,-segment[i].width,segment[i].height/8);
+    }
+    ofPopMatrix();
+  }
+  
+  bWait=true;
+}
 
 void demonstration::drawImageRotate()
 {
@@ -219,7 +310,7 @@ void demonstration::drawImageRotate()
   
   ofSetColor(white);
   unfold.draw(unfldPnt.x, unfldPnt.y);
-  ofSetColor(black);
+  ofSetColor(white*.2);
   ofSetLineWidth(1);
   for (int i=0; i<unfold.height/10.; i++) {
     ofLine(unfldPnt.x, unfldPnt.y+i*10, unfldPnt.x+unfold.width, unfldPnt.y+i*10);
@@ -227,17 +318,19 @@ void demonstration::drawImageRotate()
   for (int i=0; i<unfold.width/10.; i++) {
     ofLine(unfldPnt.x+i*10, unfldPnt.y, unfldPnt.x+i*10, unfldPnt.y+unfold.height);
   }
+  ofRect(unfldPnt.x, unfldPnt.y, unfold.width, 20);
+  
   double perc=1.-sld.getPercent();
   if(perc<=.2) perc=.2;
-  ofRect(unfldPnt.x, unfldPnt.y, unfold.width, 20);
   if(frame.justExpired()&&rotateCnt<3600&&bRunning){
     frame.set(perc*frmTm);
     rotateCnt-=(360/segment.size())/17.;
     if(rotateCnt<0){
       rotateCnt+=360;
-      if(cnt<6){
+      if(cnt<numSpins){
+        if(cnt==numSpins-1) mode++,bWait=true;
         cnt++;
-        sld.setPercent(sld.getPercent()+.16);
+        sld.setPercent(sld.getPercent()+1/(float(numSpins)));
       }
     }
     for (int i=0; i<segment.size(); i++) {
@@ -248,35 +341,49 @@ void demonstration::drawImageRotate()
   ofNoFill();
   ofSetLineWidth(2);
   for (int i=0; i<segment.size(); i++) {
-    ofSetColor(col[i]);
+    ofSetColor(col[i%4]);
     ofRect(int(unfldPnt.x+(unfold.width-segment[i].width)*(rotAng(i)/360.)), unfldPnt.y, segment[i].width, segment[i].height);
   }
   ofSetLineWidth(1);
   
   ofFill();
   
-  ofSetColor(black);
+  ofSetColor(white*.2);
   ofSetCircleResolution(90);
   ofCircle(x+w/2-spiral.width, y+h/3, spiral.width/2);
   if(firstTime) persist.grabScreen(x+w/2-spiral.width*3/2., int(y+h/3-spiral.width/2), persist.width, persist.height),firstTime=false;
   ofSetColor(white);
   persist.draw(int(x+w/2-spiral.width*3/2.), int(y+h/3-spiral.width/2));
-  ofSetColor(black.opacity(sqrt(perc)*1/10.));
+  ofSetColor((white*.2).opacity(sqrt(perc)*1/10.));
   ofCircle(x+w/2-spiral.width, y+h/3, spiral.width/2+3);
   for (unsigned int i=0; i<segment.size(); i++) {
     ofPushMatrix();
     ofTranslate(x+w/2-spiral.width, y+h/3, 0);
     ofRotate(rotAng(i));
     ofSetColor(white);
-    segment[i].draw(0,0,-segment[i].width,segment[i].height);
+    segment[i].draw(segment[i].width/2,0,-segment[i].width,segment[i].height);
     ofPopMatrix();
   }
   ofSetCircleResolution(40);
   persist.grabScreen(int(x+w/2-spiral.width*3/2.), int(y+h/3-spiral.width/2), persist.width, persist.height);
   
+  unsigned char * pix=persist.getPixels();
   
-  if(cnt>=6){
-    bWait=true;
+  for (unsigned int i=0; i<persist.width*persist.height*4; i+=4) {
+    if(abs(51-pix[i])<20&&abs(51-pix[i+1])<20&&abs(51-pix[i+2])<20) pix[i+3]=abs(51-pix[i]);
+  }
+  
+  persist.setFromPixels(pix, persist.width, persist.height,OF_IMAGE_COLOR_ALPHA);
+  
+  ofSetColor(white*.2);
+  ofRect(x+w/2-spiral.width*3/2., int(y+h/3-spiral.width/2), persist.width, persist.height);
+  
+  drawWheelFrame(x+w/2-spiral.width,y+h/3);
+  
+  ofSetColor(white);
+  persist.draw(int(x+w/2-spiral.width*3/2.), int(y+h/3-spiral.width/2));
+  
+  if(cnt>=numSpins){
     ofSetColor(white);
     spiral.draw(x+w/2+spiral.width, y+h/3);
   }
@@ -285,7 +392,7 @@ void demonstration::drawImageRotate()
     for (unsigned int i=0; i<segment.size(); i++) {
       ofVector vecEnd=ofVector(0, segment[i].height).rotate(rotAng(i));
       
-      ofSetColor(col[i]);
+      ofSetColor(col[i%4]);
       ofSetLineWidth(4);
       ofLine(int(unfldPnt.x+(unfold.width-segment[i].width)*(rotAng(i)/360.)), unfldPnt.y,(x+w/2-spiral.width)+ vecEnd.x, y+h/3+vecEnd.y);
       ofSetLineWidth(1);
@@ -312,7 +419,8 @@ void demonstration::draw(int _x, int _y, int _w, int _h)
   if(bRunning&&mode==SELECT) drawSelectImage();
 	if(bRunning&&mode==UNFLD) drawUnfold();
   if(bRunning&&mode==MVING) drawImageMove();
-  if(bRunning&&mode==ROTATING) drawImageRotate();
+  if(bRunning&&mode==MAGNET) drawMagnetPosition();
+  if(bRunning&&(mode==ROTATING||mode==SPINNING)) drawImageRotate();
   
   drawSideBar();
 }
@@ -341,8 +449,6 @@ void demonstration::drawSideBar()
   
   ofSetColor(white*.15);
   drawHatching(side.x, side.y, side.width, side.height, 20, 20);
-  //ofRect(titleArea);
-  //drawBorder(titleArea);
   drawBorder(side);
   drawBorder(r);
   
@@ -360,7 +466,7 @@ void demonstration::drawSideBar()
   
   
   ofSetColor(yellow);
-  label.drawString(text+add[int(mode)-1], side.x+pad.x,side.y+(side.height-label.stringHeight(text+add[int(mode)-1])-botBox.height)/2);
+  label.drawString(text+add[int(mode)-1], side.x+pad.x,side.y+100);//side.y+(side.height-label.stringHeight(text+add[int(mode)-1])-botBox.height)/2
   
   if(bWait&&mode>=UNFLD){
     prev.draw(side.x+40, side.y+side.height-botBox.height-prev.h-20);
@@ -394,6 +500,7 @@ bool demonstration::clickDown(int _x, int _y)
     bWait=false;
     change=true;
     mode--;
+    if(mode==ROTATING) mode--;
   }
   if(bWait&&next.clickDown(_x, _y)){
     change=true;
@@ -414,8 +521,9 @@ bool demonstration::clickDown(int _x, int _y)
       unfold.allocate(1, spiral.height/2,OF_IMAGE_COLOR_ALPHA);
       cnt=count=0,rotateCnt=360;
     }
+    if(mode==MAGNET) frame.set(1/10.);
     if(mode==SELECT) frame.set(1);
-    if(mode==ROTATING) frame.set(1/120.);
+    if(mode==ROTATING) frame.set(1/120.), cnt=0, sld.setPercent(0);
     frame.run();
   }
   return sld.clickDown(_x, _y);
