@@ -51,9 +51,11 @@ void circleSubRect(int x, int y, int w, int h,int rad){
 void imageArea::setup()
 {
   image=0;
+  pImage=0;
   bCapture=bDrawing=bFill=bChanged=false;
   mousePointer.loadImage("pointer.png");
   animName="Default";
+  mode=LED_HOME;
 }
 
 void imageArea::update()

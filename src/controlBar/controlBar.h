@@ -24,7 +24,6 @@ protected:
   ofButton drawB,demo,predef;
   dallasButton home;
   imageArea * image;
-  ledControlMode mode;
   
   uploadModule upload;
   

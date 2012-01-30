@@ -49,9 +49,10 @@ void controlBar::drawForeground()
   int mouseX=ofGetAppPtr()->mouseX;
   int mouseY=ofGetAppPtr()->mouseY;
   if(getMode()==LED_HOME){
-    ofSetColor(black.opacity(.85));
-    ofRectangle r(x,y,ofGetWidth(),ofGetHeight());
-    ofRect(r);
+    //ofSetColor(black.opacity(.85));
+    //ofRectangle r(x,y,ofGetWidth(),ofGetHeight());
+    //ofRect(r);
+    
     /*ofSetColor(black);
     drawHatching(r.x, r.y, r.width, r.height, 15, 1);*/
     predef.draw((ofGetWidth()/3-predef.w)/2, (ofGetHeight()-predef.h)/2);
@@ -82,10 +83,10 @@ void controlBar::setAvailableButtons()
 
 bool controlBar::clickDown(int _x, int _y, int button)
 {
-  if(getMode()!=LED_HOME){
-    if(home.clickDown(_x, _y)) image->mode=LED_HOME;
-  }
-  else{
+  //if(getMode()!=LED_HOME){
+  //  if(home.clickDown(_x, _y)) image->mode=LED_HOME;
+  //}
+  if(getMode()==LED_HOME){
     if(drawB.clickDown(_x, _y)) image->mode=LED_DRAW, image->changeImage(drawImage);
     else if(demo.clickDown(_x, _y)) image->mode=LED_DEMO, HIW.start();
     else if(predef.clickDown(_x, _y)) image->mode=LED_PREDEF;
