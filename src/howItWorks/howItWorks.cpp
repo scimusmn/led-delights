@@ -242,8 +242,8 @@ void demonstration::drawWheelFrame(int _x, int _y)
     ofSetColor(white);
     float hPerc=(spiral.height/2-20.)/blade.height;
     blade.draw(-(spiral.height/2-20)*.1, (spiral.height/2-20)*.075, blade.width*hPerc,spiral.height/2-20);
-    for(unsigned int j=0; j<(spiral.height/2-40)/10; j++){
-      if(j>(spiral.height/2-40)/10-4&&(rotAng(i)<20||rotAng(i)>340)) ofSetColor(col[i%4]);
+    for(unsigned int j=0; j<(spiral.height/2-30)/10; j++){
+      if(j>(spiral.height/2-30)/10-4&&(rotAng(i)<20||rotAng(i)>340)) ofSetColor(col[i%4]);
       else ofSetColor(black);
       ofRect(-4, 20+(spiral.height/2-20)/13*j, 8, 8);
     }
@@ -329,7 +329,7 @@ void demonstration::drawImageRotate()
   if(perc<=.2) perc=.2;
   if(frame.justExpired()&&rotateCnt<3600&&bRunning){
     frame.set(perc*frmTm);
-    rotateCnt-=(360/segment.size())/17.;
+    rotateCnt-=(360/segment.size())/17.+3*(1-perc);
     if(rotateCnt<0){
       rotateCnt+=360;
       if(cnt<numSpins){
@@ -359,7 +359,7 @@ void demonstration::drawImageRotate()
   if(firstTime) persist.grabScreen(x+w/2-spiral.width*3/2., int(y+h/3-spiral.width/2), persist.width, persist.height),firstTime=false;
   ofSetColor(white);
   persist.draw(int(x+w/2-spiral.width*3/2.), int(y+h/3-spiral.width/2));
-  ofSetColor((white*.2).opacity(sqrt(perc)*1/10.));
+  ofSetColor((white*.2).opacity(.75*pow(perc,2.5)));
   ofCircle(x+w/2-spiral.width, y+h/3, spiral.width/2+3);
   for (unsigned int i=0; i<segment.size(); i++) {
     ofPushMatrix();
@@ -375,7 +375,7 @@ void demonstration::drawImageRotate()
   unsigned char * pix=persist.getPixels();
   
   for (unsigned int i=0; i<persist.width*persist.height*4; i+=4) {
-    if(abs(51-pix[i])<20&&abs(51-pix[i+1])<20&&abs(51-pix[i+2])<20) pix[i+3]=abs(51-pix[i]);
+    if(abs(51-pix[i])<10&&abs(51-pix[i+1])<10&&abs(51-pix[i+2])<10) pix[i+3]=abs(51-pix[i]);
   }
   
   persist.setFromPixels(pix, persist.width, persist.height,OF_IMAGE_COLOR_ALPHA);

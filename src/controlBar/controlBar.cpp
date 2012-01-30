@@ -83,9 +83,6 @@ void controlBar::setAvailableButtons()
 
 bool controlBar::clickDown(int _x, int _y, int button)
 {
-  //if(getMode()!=LED_HOME){
-  //  if(home.clickDown(_x, _y)) image->mode=LED_HOME;
-  //}
   if(getMode()==LED_HOME){
     if(drawB.clickDown(_x, _y)) image->mode=LED_DRAW, image->changeImage(drawImage);
     else if(demo.clickDown(_x, _y)) image->mode=LED_DEMO, HIW.start();
