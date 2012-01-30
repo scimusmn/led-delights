@@ -56,6 +56,8 @@ protected:
   int rotateCnt;
 	ofTimer frame;
   
+  ofImage blade;
+  
   ofPoint unfldPnt;
   
   ofSlider sld;

@@ -78,6 +78,7 @@ demonstration::demonstration()
   next.setup(40, OF_VERT, "images/next.png", "images/next_active.png");
   
   home.setup("Return to Home", 25);
+  blade.loadImage("images/blade.png");
 }
 
 void demonstration::setup(imageArea * img)
@@ -209,6 +210,8 @@ bool firstTime=true;
 
 void demonstration::drawWheelFrame(int _x, int _y)
 {
+  int segAng=360/segment.size();
+  
   ofSetColor(black);
   ofRect(_x-12, _y-2, 24,segment[0].height+20+4);
   ofSetColor(white*.3);
@@ -229,6 +232,21 @@ void demonstration::drawWheelFrame(int _x, int _y)
     ofRotate(360/16);
     ofLine(15, 0, 15, segment[0].height);
     ofLine(-15, 0, -15, segment[0].height);
+    ofPopMatrix();
+  }
+  
+  for (unsigned int i=0; i<segment.size(); i++) {
+    ofPushMatrix();
+    ofTranslate(x+w/2-spiral.width, y+h/3, 0);
+    ofRotate(rotAng(i));
+    ofSetColor(white);
+    float hPerc=(spiral.height/2-20.)/blade.height;
+    blade.draw(-(spiral.height/2-20)*.1, (spiral.height/2-20)*.075, blade.width*hPerc,spiral.height/2-20);
+    for(unsigned int j=0; j<(spiral.height/2-40)/10; j++){
+      if(j>(spiral.height/2-40)/10-4&&(rotAng(i)<20||rotAng(i)>340)) ofSetColor(col[i%4]);
+      else ofSetColor(black);
+      ofRect(-4, 20+(spiral.height/2-20)/13*j, 8, 8);
+    }
     ofPopMatrix();
   }
 }
@@ -266,34 +284,21 @@ void demonstration::drawMagnetPosition()
   
   drawWheelFrame(x+w/2-spiral.width,y+h/3);
   
+  ofVector micro=ofVector(segment[0].width/2+30, segment[0].height/8+10).rotate(rotAng(0));
+  
+  //_-_-_-_-_ Labeling on the wheel //_-_-_-_-_
+  
   ofSetColor(yellow);
   label.setMode(OF_FONT_MID);
   label.drawString("magnet", x+w/2-spiral.width/2, y+h/3+spiral.height/2);
+  label.drawString("microcontroller", x+w/2-spiral.width/2, y+h/3-spiral.height/2);
   label.setMode(OF_FONT_TOP);
   ofPushStyle();
   ofSetLineWidth(2);
   ofEnableSmoothing();
-  ofLine(x+w/2-spiral.width/2, y+h/3+spiral.height/2, x+w/2-spiral.width+6, y+h/3+spiral.height*7/16.);
+  ofLine(x+w/2-spiral.width/2, y+h/3+spiral.height/2, x+w/2-spiral.width+6, y+h/3+spiral.height*7/16.+6);
+  ofLine(x+w/2-spiral.width/2, y+h/3-spiral.height/2, x+w/2-spiral.width+micro.x, y+h/3+micro.y);
   ofPopStyle();
-  
-  for (unsigned int i=0; i<segment.size(); i++) {
-    ofPushMatrix();
-    ofTranslate(x+w/2-spiral.width, y+h/3, 0);
-    ofRotate(rotAng(i));
-    ofSetColor(white*.3);
-    ofRect(segment[i].width/2, segment[i].height/8,-segment[i].width,segment[i].height*7/8);
-    ofRect(segment[i].width/2, segment[i].height/8,-40,20);
-    ofNoFill();
-    ofSetColor(black);
-    ofRect(segment[i].width/2, segment[i].height/8,-segment[i].width,segment[i].height*7/8);
-    ofRect(segment[i].width/2, segment[i].height/8,-40,20);
-    ofFill();
-    if(rotAng(i)<20||rotAng(i)>340){
-      ofSetColor(col[i%4]);
-      ofRect(segment[i].width/2, segment[i].height*7/8,-segment[i].width,segment[i].height/8);
-    }
-    ofPopMatrix();
-  }
   
   bWait=true;
 }
@@ -361,7 +366,7 @@ void demonstration::drawImageRotate()
     ofTranslate(x+w/2-spiral.width, y+h/3, 0);
     ofRotate(rotAng(i));
     ofSetColor(white);
-    segment[i].draw(segment[i].width/2,0,-segment[i].width,segment[i].height);
+    segment[i].draw(segment[i].width/2,0,-segment[i].width,segment[i].height-10);
     ofPopMatrix();
   }
   ofSetCircleResolution(40);
@@ -419,7 +424,7 @@ void demonstration::draw(int _x, int _y, int _w, int _h)
   if(bRunning&&mode==SELECT) drawSelectImage();
 	if(bRunning&&mode==UNFLD) drawUnfold();
   if(bRunning&&mode==MVING) drawImageMove();
-  if(bRunning&&mode==MAGNET) drawMagnetPosition();
+  if(bRunning&&mode==MAGNET) drawMagnetPosition();//
   if(bRunning&&(mode==ROTATING||mode==SPINNING)) drawImageRotate();
   
   drawSideBar();
