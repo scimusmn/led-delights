@@ -104,7 +104,7 @@ void header(string hdr, ofFont & label, int x, int y, int w, int h)
 
 void demonstration::drawSelectImage()
 {
-  header("On computer", label, x, y, w, h);
+  header("You select an image.", label, x, y, w, h);
   
   unfldPnt.x=x+w/2;
   unfldPnt.y=y+(h-spiral.height)/2;
@@ -116,7 +116,7 @@ void demonstration::drawSelectImage()
 
 void demonstration::drawUnfold()
 {
-  header("On computer", label, x, y, w, h);
+  header("The computer processes your image.", label, x, y, w, h);
   if(!bMovedBeforeUnfld){
     unfldPnt.x=x+w/2-frame.getPercent()*(M_PI*spiral.width/2);
     unfldPnt.y=y+(h-spiral.height)/2;
@@ -155,6 +155,82 @@ void demonstration::drawUnfold()
     ofPopMatrix();
     ofSetColor(255, 255, 255);
     unfold.draw(unfldPnt.x, unfldPnt.y);
+    
+    ofSetColor(black);
+    ofSetLineWidth(1);
+    for (int i=0; i<unfold.height/10.; i++) {
+      ofLine(unfldPnt.x, unfldPnt.y+i*10, unfldPnt.x+unfold.width, unfldPnt.y+i*10);
+    }
+    for (int i=0; i<unfold.width/10.; i++) {
+      ofLine(unfldPnt.x+i*10, unfldPnt.y, unfldPnt.x+i*10, unfldPnt.y+unfold.height);
+    }
+    if(bWait){
+      label.setMode(OF_FONT_CENTER);
+      string text="You can make all colors of light\nby mixing red, green and blue light.\nRed and green mix to make yellow.";
+      ofRectangle mixt(unfldPnt.x+50,unfldPnt.y+unfold.height+100,50,50);
+      unsigned char * pix=unfold.getPixels();
+      int basePx=(unfold.height-5)*unfold.width*4+5*4;
+      ofColor mix(pix[basePx],pix[basePx+1],pix[basePx+2]);
+      ofSetColor(mix);
+      ofRect(mixt.x, mixt.y, mixt.width, mixt.height);
+      
+      ofSetColor(white);
+      ofRect(mixt.x+mixt.width*1.3,mixt.y+mixt.height*.4,mixt.width*.4,mixt.height*.1);
+      ofRect(mixt.x+mixt.width*1.3,mixt.y+mixt.height*.6,mixt.width*.4,mixt.height*.1);
+      
+      ofSetColor(mix.r,0,0);
+      ofRect(mixt.x+mixt.width*2, mixt.y, mixt.width, mixt.height);
+      ofSetColor(white);
+      label.drawString("r", mixt.x+mixt.width*2.5, mixt.y+mixt.height);
+      
+      ofSetColor(white);
+      ofRect(mixt.x+mixt.width*3.3,mixt.y+mixt.height*.45,mixt.width*.4,mixt.height*.1);
+      ofRect(mixt.x+mixt.width*3.45,mixt.y+mixt.height*.3,mixt.width*.1,mixt.height*.4);
+      
+      ofSetColor(0,mix.g,0);
+      ofRect(mixt.x+mixt.width*4, mixt.y, mixt.width, mixt.height);
+      ofSetColor(white);
+      label.drawString("g", mixt.x+mixt.width*4.5, mixt.y+mixt.height);
+      
+      ofSetColor(white);
+      ofRect(mixt.x+mixt.width*5.3,mixt.y+mixt.height*.45,mixt.width*.4,mixt.height*.1);
+      ofRect(mixt.x+mixt.width*5.45,mixt.y+mixt.height*.3,mixt.width*.1,mixt.height*.4);
+      
+      ofSetColor(0,0,mix.b);
+      ofRect(mixt.x+mixt.width*6, mixt.y, mixt.width, mixt.height);
+      ofSetColor(white);
+      label.drawString("b", mixt.x+mixt.width*6.5, mixt.y+mixt.height);
+      label.setMode(OF_FONT_LEFT);
+      
+      ofPushStyle();
+      ofNoFill();
+      ofEnableSmoothing();
+      ofSetLineWidth(2);
+      ofSetColor(white*.6);
+      ofLine(unfldPnt.x, unfldPnt.y+unfold.height,mixt.x-mixt.width/2, mixt.y-mixt.height/2+mixt.height*2);
+      ofLine(unfldPnt.x+10, unfldPnt.y+unfold.height,mixt.x-mixt.width/2+mixt.width*8, mixt.y-mixt.height/2);
+      ofRect(mixt.x-mixt.width/2, mixt.y-mixt.height/2, mixt.width*8, mixt.height*2);
+      ofPopStyle();
+      
+      ofSetColor(yellow);
+      label.drawString(text, mixt.x-mixt.width/2+mixt.width*8+50, mixt.y-mixt.height/2);
+    }
+  }
+}
+
+void drawChip(float x, float y, float w, float h)
+{
+  float unit=w/10;
+  ofSetColor(black);
+  ofRect(x+unit,y+unit,w-2*unit,h-2*unit);
+  ofSetColor(red);
+  ofCircle(x+w/2, y+h/2, w/5);
+  for(int i=0; i<10; i++){
+    ofSetColor(white);
+    ofLine(x, y+unit*1.25+i*(h-2*unit)/10, x+unit, y+unit*1.25+i*(h-2*unit)/10);
+    ofLine(x+w-unit, y+unit*1.25+i*(h-2*unit)/10, x+w, y+unit*1.25+i*(h-2*unit)/10);
+    ofLine(x+unit*1.5+i*(w-2*unit)/10, y, x+unit*1.5+i*(w-2*unit)/10, y+unit);
+    ofLine(x+unit*1.5+i*(w-2*unit)/10, y+h-unit, x+unit*1.5+i*(w-2*unit)/10, y+h);
   }
 }
 
@@ -178,14 +254,24 @@ void demonstration::drawImageMove()
     }
   }
   
-  header("On computer", label, x, y, w, h);
-  header("On microcontroller on wheel", label, x, unfldPnt.y+unfold.height+80, w, h);
+  drawChip(x+(w-50)/2, y+h-75, 50, 50);
+  ofSetColor(white*.6);
+  ofPushStyle();
+  ofNoFill();
+  ofEnableSmoothing();
+  ofSetLineWidth(2);
+  ofRect(unfldPnt.x, unfldPnt.y+spiral.height, unfold.width, unfold.height);
+  ofLine(unfldPnt.x, unfldPnt.y+spiral.height+unfold.height, x+(w-50)/2, y+h-75);
+  ofLine(unfldPnt.x+unfold.width, unfldPnt.y+spiral.height+unfold.height, x+(w+50)/2, y+h-75);
+  ofPopStyle();
+  
+  header("The computer transfers information to the microcontroller on the wheel.", label, x, y, w, h);
+  header("The microcontroller stores the information.", label, x, unfldPnt.y+unfold.height+80, w, h);
   
   
   if(animIndex<anim.size()&&frame.justExpired()){
     anim[animIndex].beginAnimation(ofPoint(anim[animIndex].orig.x,anim[animIndex].orig.y+spiral.height),1);
     animIndex++;
-    cout << animIndex << " is the current frame out of " << anim.size() << endl; 
     frame.set(.025),frame.run();
   }
   
@@ -194,6 +280,8 @@ void demonstration::drawImageMove()
   for (unsigned int i=0; i<anim.size(); i++) {
     anim[i].draw();
   }
+  
+  
 }
 
 ofColor red2(255,0,0);
@@ -247,6 +335,7 @@ void demonstration::drawWheelFrame(int _x, int _y)
       else ofSetColor(black);
       ofRect(-4, 20+(spiral.height/2-20)/13*j, 8, 8);
     }
+    if(i==0) drawChip(blade.width*hPerc/2, 20, 10, 10);
     ofPopMatrix();
   }
 }
@@ -258,8 +347,19 @@ void demonstration::drawMagnetPosition()
   
   int segAng=360/segment.size();
   
-  header("Image displayed on wheel", label, x, y, w, h);
-  header("On microcontroller on wheel", label, x, unfldPnt.y-spiral.height+unfold.height+80, w, h);
+  drawChip(x+(w-50)/2, y+h-75, 50, 50);
+  ofSetColor(white*.6);
+  ofPushStyle();
+  ofNoFill();
+  ofEnableSmoothing();
+  ofSetLineWidth(2);
+  ofRect(unfldPnt.x, unfldPnt.y, unfold.width, unfold.height);
+  ofLine(unfldPnt.x, unfldPnt.y+unfold.height, x+(w-50)/2, y+h-75);
+  ofLine(unfldPnt.x+unfold.width, unfldPnt.y+unfold.height, x+(w+50)/2, y+h-75);
+  ofPopStyle();
+  
+  header("The microcontroller senses the position and speed of the wheel.", label, x, y, w, h);
+  header("The microcontroller stores the information.", label, x, unfldPnt.y-spiral.height+unfold.height+80, w, h);
   
   ofSetColor(white);
   unfold.draw(unfldPnt.x, unfldPnt.y);
@@ -310,8 +410,19 @@ void demonstration::drawImageRotate()
   
   int segAng=360/segment.size();
   
-  header("Image displayed on wheel", label, x, y, w, h);
-  header("On microcontroller on wheel", label, x, unfldPnt.y-spiral.height+unfold.height+80, w, h);
+  drawChip(x+(w-50)/2, y+h-75, 50, 50);
+  ofSetColor(white*.6);
+  ofPushStyle();
+  ofNoFill();
+  ofEnableSmoothing();
+  ofSetLineWidth(2);
+  ofRect(unfldPnt.x, unfldPnt.y, unfold.width, unfold.height);
+  ofLine(unfldPnt.x, unfldPnt.y+unfold.height, x+(w-50)/2, y+h-75);
+  ofLine(unfldPnt.x+unfold.width, unfldPnt.y+unfold.height, x+(w+50)/2, y+h-75);
+  ofPopStyle();
+  
+  header("The microcontroller flashes LEDs in sequence.", label, x, y, w, h);
+  header("Stored information determines the color of each LED flash.", label, x, unfldPnt.y-spiral.height+unfold.height+80, w, h);
   
   ofSetColor(white);
   unfold.draw(unfldPnt.x, unfldPnt.y);
@@ -333,7 +444,7 @@ void demonstration::drawImageRotate()
     if(rotateCnt<0){
       rotateCnt+=360;
       if(cnt<numSpins){
-        if(cnt==numSpins-1) mode++,bWait=true;
+        if(cnt==numSpins-1) bWait=true;
         cnt++;
         sld.setPercent(sld.getPercent()+1/(float(numSpins)));
       }
@@ -346,7 +457,7 @@ void demonstration::drawImageRotate()
   ofNoFill();
   ofSetLineWidth(2);
   for (int i=0; i<segment.size(); i++) {
-    ofSetColor(col[i%4]);
+    ofSetColor(white);
     ofRect(int(unfldPnt.x+(unfold.width-segment[i].width)*(rotAng(i)/360.)), unfldPnt.y, segment[i].width, segment[i].height);
   }
   ofSetLineWidth(1);
@@ -388,7 +499,8 @@ void demonstration::drawImageRotate()
   ofSetColor(white);
   persist.draw(int(x+w/2-spiral.width*3/2.), int(y+h/3-spiral.width/2));
   
-  if(cnt>=numSpins){
+  if(mode==SPINNING){
+    bWait=true;
     ofSetColor(white);
     spiral.draw(x+w/2+spiral.width, y+h/3);
   }
@@ -397,7 +509,7 @@ void demonstration::drawImageRotate()
     for (unsigned int i=0; i<segment.size(); i++) {
       ofVector vecEnd=ofVector(0, segment[i].height).rotate(rotAng(i));
       
-      ofSetColor(col[i%4]);
+      ofSetColor(white);
       ofSetLineWidth(4);
       ofLine(int(unfldPnt.x+(unfold.width-segment[i].width)*(rotAng(i)/360.)), unfldPnt.y,(x+w/2-spiral.width)+ vecEnd.x, y+h/3+vecEnd.y);
       ofSetLineWidth(1);
@@ -432,19 +544,19 @@ void demonstration::draw(int _x, int _y, int _w, int _h)
 
 void demonstration::drawSideBar()
 {
-  string text="Steps to project the image\non the wheel:\n\n";
+  string text="Here are the steps\nto project an image\non the wheel:\n\n";
   string add[6]={\
-    "1. The user selects an\n  image to display\n   on the wheel.",\
-    "2. The computer unrolls\n   the selected image into\n   an array of radial lines\n   of pixels (triplets of numbers\n   representing red, blue and\n   green values).",\
-    "3. This array is sent\n   wirelessly to the\n   microcontroller on the wheel\n   which controls the LEDs",\
-    "4. The microcontroller\n   receives an electrical\n   pulse everytime a line\n   of LEDs passes a magnet on\n   the frame. The microcontroller\n   uses this signal to\n   determine the position and\n   speed of the wheel.",\
-    "5. Once the processor\n   knows the position and\n   speed of the wheel,\n   it can then use the\n   array of pixels stored\n   in memory to sequence\n   the flashing of the LEDs",\
+    "1. You select an\n   image to display\n   on the wheel\n   and press the\n   Upload button.",\
+    "2. The computer unrolls\n   your image as an\n   array of radial lines\n   of pixels (sets of three numbers\n   representing red, green and\n   blue values).",\
+    "3. The computer sends\n   the array of pixels\n   wirelessly to the\n   microcontroller,\n   which controls the LEDs.",\
+    "4. The microcontroller\n   receives an electrical\n   pulse every time a line\n   of LEDs passes a magnet on\n   the frame.\n\n   The microcontroller\n   uses this signal to\n   determine the position and\n   speed of the wheel.",\
+    "5. Once the microcontroller\n   knows the position and\n   speed of the wheel,\n   it uses the\n   array of pixels stored\n   in its memory to sequence\n   the flashing of\n   red, green and\n   blue LEDs.",\
     "6. Although the LEDs rapidly\n   blink on and off, your eye merges\n   the flashes into a solid image."};
     
   
     
   for (int i=0; i<6; i++) {
-    side.width=max(label.stringWidth(text+add[i])+pad.x*2,side.width);
+    side.width=max(label.stringWidth(add[i])+pad.x*2,side.width);
   }
   
   ofSetColor(gray);
@@ -462,7 +574,7 @@ void demonstration::drawSideBar()
   ofRect(botBox);
   drawBorder(botBox);
   
-  if(bWait&&mode>=ROTATING&&(ofGetElapsedTimeMillis()/250)%2){
+  if(bWait&&mode>=SPINNING&&(ofGetElapsedTimeMillis()/250)%2){
     ofSetColor(yellow);
     trimmedRect(home.x-5, home.y-5, home.w+10, home.h+10);
   }
@@ -471,12 +583,12 @@ void demonstration::drawSideBar()
   
   
   ofSetColor(yellow);
-  label.drawString(text+add[int(mode)-1], side.x+pad.x,side.y+100);//side.y+(side.height-label.stringHeight(text+add[int(mode)-1])-botBox.height)/2
+  label.drawString(text+add[int(mode)-1], side.x+pad.x,side.y+50);//side.y+(side.height-label.stringHeight(text+add[int(mode)-1])-botBox.height)/2
   
   if(bWait&&mode>=UNFLD){
     prev.draw(side.x+40, side.y+side.height-botBox.height-prev.h-20);
   }
-  if(bWait&&mode<ROTATING){
+  if(bWait&&mode<SPINNING){
     next.draw(side.x+side.width-next.w-40, side.y+side.height-botBox.height-next.h-20);
     if((ofGetElapsedTimeMillis()/500)%2){
       ofSetColor(yellow);
@@ -505,7 +617,6 @@ bool demonstration::clickDown(int _x, int _y)
     bWait=false;
     change=true;
     mode--;
-    if(mode==ROTATING) mode--;
   }
   if(bWait&&next.clickDown(_x, _y)){
     change=true;
