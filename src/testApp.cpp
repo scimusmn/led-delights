@@ -39,11 +39,12 @@ void testApp::draw(){
   
   bar.drawForeground();
   if(bar.getMode()==LED_DRAW) tBar.drawForeground();
-  area.drawForeground();
   
   string ttl=((bar.getMode()==LED_DRAW)?"DRAW YOUR OWN IMAGE FOR THE WHEEL":(bar.getMode()==LED_PREDEF)?"CHOOSE AN IMAGE TO SEND TO THE WHEEL":(bar.getMode()==LED_HOME)?"LED DELIGHTS":"HOW IT WORKS");
   
   title.draw(ttl,0,0);
+  
+  area.drawForeground();
 }
 
 //--------------------------------------------------------------

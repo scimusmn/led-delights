@@ -38,7 +38,7 @@ animCell::animCell(ofPoint pnt,int w, int h)
 
 void animCell::draw()
 {
-  pos=orig+(end-orig)*frame.getPercent()-sin(frame.getPercent()*M_PI)*ofPoint(100,0);
+  pos=orig+(end-orig)*frame.getPercent()-sin(frame.getPercent()*M_PI*2)*ofPoint(100,0);
   ofSetColor(white);
   cell.draw(pos.x, pos.y);
 }

@@ -56,6 +56,8 @@ void imageArea::setup()
   mousePointer.loadImage("pointer.png");
   animName="Default";
   mode=LED_HOME;
+  
+  ofHideCursor();
 }
 
 void imageArea::update()

@@ -8,6 +8,7 @@
  */
 
 #include "uploadModule.h"
+#include "dallasEng.h"
 
 extern ofColor yellow;
 
@@ -29,6 +30,9 @@ void uploadModule::setup(imageArea * img)
   h=button.h+label.stringHeight("Kjhg")+pad.y*2;
   
   label.setSize(70);
+  
+  uploaded.set(3);
+  uploaded.pause();
 }
 
 void uploadModule::upload()
@@ -36,7 +40,7 @@ void uploadModule::upload()
   string dir="upload/images/";
   if(image->mode==LED_DRAW) image->currentImage().saveFile(dir);
 	image->currentImage().writePlaylist(dir+"playlist");
-	command.run("sh "+ofToDataPath(dir+"../upload.sh"));
+	command.run("\""+ofToDataPath(dir+"../upload.sh\""));
 }
 
 void uploadModule::draw(int _x, int _y)
@@ -63,8 +67,10 @@ bool uploadModule::drawForeground()
   if(uploaded.running()){
     ofSetColor(0, 0, 0,196);
     ofRect(0, 0, ofGetWidth(), ofGetHeight());
+    int wid=label.stringWidth("Turn the crank to view your image.");
+    drawStyledBox((ofGetWidth()-wid)/2-50, ofGetHeight()/3-50, wid+100, ofGetHeight()/6+label.stringHeight("Kjhg")+50);
     ofSetColor(255, 255, 255);
-    label.drawString("Done uploading:", ofGetWidth()/2, ofGetHeight()/4);
+    label.drawString("Done uploading:", ofGetWidth()/2, ofGetHeight()/3);
     label.drawString("Turn the crank to view your image.", ofGetWidth()/2, ofGetHeight()/2);
   }
 }

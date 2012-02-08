@@ -29,6 +29,7 @@ void controlBar::setup(imageArea & img)
   home.setup("Return to Home", 25);
   
   drawImage.loadImage("upload/images/0.jpg");
+  drawImage.bChose=true;
   
   upload.setup(image);
   HIW.setup(image);
