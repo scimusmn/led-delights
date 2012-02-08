@@ -34,6 +34,8 @@ protected:
   demonstration HIW;
   
   ofPoint pad;
+  
+  ofTimer timeout;
 public:
   void setup(imageArea & img);
   void draw(int x, int y);

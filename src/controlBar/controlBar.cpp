@@ -75,7 +75,9 @@ void controlBar::drawForeground()
 
 void controlBar::update()
 {
-  
+  if (timeout.justExpired()) {
+    image->mode=LED_HOME;
+  }
 }
 
 void controlBar::setAvailableButtons()
@@ -84,6 +86,8 @@ void controlBar::setAvailableButtons()
 
 bool controlBar::clickDown(int _x, int _y, int button)
 {
+  timeout.set(180);
+  timeout.run();
   if(getMode()==LED_HOME){
     if(drawB.clickDown(_x, _y)) image->mode=LED_DRAW, image->changeImage(drawImage);
     else if(demo.clickDown(_x, _y)) image->mode=LED_DEMO, HIW.start();
@@ -119,7 +123,11 @@ void controlBar::drag(int _x, int _y)
 
 bool controlBar::mouseLockout(int button)
 {
-  
+  bool ret=false;
+  if (upload.isUploading()) {
+    ret=true;
+  }
+  return ret;
 }
 
 ledControlMode controlBar::getMode()

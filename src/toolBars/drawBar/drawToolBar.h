@@ -17,6 +17,7 @@ protected:
   palette  pal;
   sizeChoose sz;
   dallasButton fill;
+  dallasButton clear;
   
   imageArea * image;
   

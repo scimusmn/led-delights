@@ -10,7 +10,7 @@
 #include "uploadModule.h"
 #include "dallasEng.h"
 
-extern ofColor yellow;
+extern ofColor yellow,black,white;
 
 void uploadModule::setup(imageArea * img)
 {
@@ -57,11 +57,11 @@ void uploadModule::draw(int _x, int _y)
 bool uploadModule::drawForeground()
 {
   if (isUploading()) {
-    ofSetColor(0, 0, 0,196);
+    ofSetColor(black.opacity(.85));
     ofRect(0, 0, ofGetWidth(), ofGetHeight());
-    ofSetColor(255, 255, 255);
+    ofSetColor(white);
     spinner.draw(ofGetWidth()/2, ofGetHeight()/5*3, ofGetHeight()/3);
-    ofSetColor(255, 255, 255);
+    ofSetColor(yellow);
     label.drawString("Uploading...", ofGetWidth()/2, ofGetHeight()/4);
   }
   if(uploaded.running()){

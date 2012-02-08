@@ -68,6 +68,7 @@ sizeBut::sizeBut(int radius)
 {
   w=radius*2, h=w;
   bChosen=false;
+  bAvailable=true;
 }
 
 void sizeBut::draw(int _x, int _y)

@@ -22,6 +22,7 @@ void testApp::setup(){
 //--------------------------------------------------------------
 void testApp::update(){
 	if(bar.getMode()==LED_PREDEF) area.update();
+  bar.update();
 }
 
 //--------------------------------------------------------------
@@ -68,10 +69,12 @@ void testApp::mouseDragged(int x, int y, int button){
 
 //--------------------------------------------------------------
 void testApp::mousePressed(int x, int y, int button){
-  area.clickDown(x, y);
-  if(bar.getMode()==LED_DRAW) tBar.clickDown(x, y);
-  if(bar.getMode()==LED_PREDEF) pBar.clickDown(x, y);
-  bar.clickDown(x, y, button);
+  if(!bar.mouseLockout(button)){
+    area.clickDown(x, y);
+    if(bar.getMode()==LED_DRAW) tBar.clickDown(x, y);
+    if(bar.getMode()==LED_PREDEF) pBar.clickDown(x, y);
+    bar.clickDown(x, y, button);
+  }
 }
 	
 //--------------------------------------------------------------

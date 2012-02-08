@@ -127,9 +127,18 @@ void imageArea::drawTool()
 	}
 }
 
+ofColor fillCol;
+
 void imageArea::fill()
 {
   bFill=true;
+  fillCol=drawColor;
+}
+
+void imageArea::fill(ofColor col)
+{
+  bFill=true;
+  fillCol=col;
 }
 
 void imageArea::draw(int _x, int _y, int _w, int _h)
@@ -140,7 +149,7 @@ void imageArea::draw(int _x, int _y, int _w, int _h)
   else if(anim.isLoaded()&&pImage&&pImage->bAnimation) anim.draw(int(x+w/2-radius()), int(y+h/2-radius()),int(radius()*2),int(radius()*2));
   if(bDrawing) drawTool();
   if(bFill){
-    ofSetColor(drawColor);
+    ofSetColor(fillCol);
     ofRect(x, y, w, h);
     bFill=false;
     bChanged=true;
@@ -151,6 +160,9 @@ void imageArea::draw(int _x, int _y, int _w, int _h)
   circleSubRect(x, y, w, h,radius());
   
   if(bCapture) captureScreen();
+  
+  ofColor(gray);
+  ofCircle(imageCenter().x, imageCenter().y, 50);
   
   ofSetColor(black);
   circleSubHatch(x,y,w,h,radius(),15,1);

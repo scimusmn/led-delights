@@ -31,6 +31,8 @@ void drawToolBar::setup(imageArea & img)
   image->changeDrawSize(sz.getDrawSize());
   fill.setup("Fill screen", 18);
   fill.w=pal.w+sz.w+pad.x;
+  clear.setup("Clear screen", 18);
+  clear.w=pal.w+sz.w+pad.x;
   undo.setup(50,OF_HOR,"images/undo.png","images/undo_active.png");
   redo.setup(50,OF_HOR,"images/redo.png","images/redo_active.png");
   
@@ -86,6 +88,8 @@ void drawToolBar::draw(int _x, int _y)
   
   fill.draw(x+(w-fill.w)/2, selCol.y+selCol.height+pad.y);
   
+  clear.draw(fill.x, fill.y+fill.h+pad.y);
+  
   ofSetColor(pal.getColor());
   ofRect(selCol);
   ofSetColor(yellow);
@@ -124,6 +128,9 @@ bool drawToolBar::clickDown(int _x, int _y)
   if(fill.clickDown(_x, _y)){
     image->fill();
   }
+  if(clear.clickDown(_x, _y)){
+    image->fill(black);
+  }
   if(home.clickDown(_x,_y)){
     image->mode=LED_HOME;
   }
@@ -132,6 +139,7 @@ bool drawToolBar::clickDown(int _x, int _y)
 bool drawToolBar::clickUp()
 {
   fill.clickUp();
+  clear.clickUp();
   sz.clickUp();
   pal.clickUp();
   undo.clickUp();
