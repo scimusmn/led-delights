@@ -137,7 +137,7 @@ void demonstration::drawUnfold()
     unfold.draw(int(unfldPnt.x), int(unfldPnt.y));
     if(frame.justExpired()&&count<360&&bRunning){
       frame.set(1/120.);
-      count++;
+      count+=2;
       unfold.resize(spiral.width*count/(360/M_PI), spiral.height/2);
       unfold.grabScreen(int(unfldPnt.x), int(unfldPnt.y), spiral.width*count/(360/M_PI), spiral.width/2);
     }
@@ -166,7 +166,7 @@ void demonstration::drawUnfold()
     }
     if(bWait){
       label.setMode(OF_FONT_CENTER);
-      string text="You can make all colors of light\nby mixing red, green and blue light.\nRed and green mix to make yellow.";
+      string text="You can make all colors of light\nby mixing red, green and blue light.\nRed and green mix to make yellow.\nNo blue is used to make this yellow.";
       ofRectangle mixt(unfldPnt.x+50,unfldPnt.y+unfold.height+100,50,50);
       unsigned char * pix=unfold.getPixels();
       int basePx=(unfold.height-5)*unfold.width*4+5*4;
@@ -181,7 +181,7 @@ void demonstration::drawUnfold()
       ofSetColor(mix.r,0,0);
       ofRect(mixt.x+mixt.width*2, mixt.y, mixt.width, mixt.height);
       ofSetColor(white);
-      label.drawString("r", mixt.x+mixt.width*2.5, mixt.y+mixt.height);
+      label.drawString("r", mixt.x+mixt.width*2.5, mixt.y+mixt.height+12);
       
       ofSetColor(white);
       ofRect(mixt.x+mixt.width*3.3,mixt.y+mixt.height*.45,mixt.width*.4,mixt.height*.1);
@@ -190,16 +190,27 @@ void demonstration::drawUnfold()
       ofSetColor(0,mix.g,0);
       ofRect(mixt.x+mixt.width*4, mixt.y, mixt.width, mixt.height);
       ofSetColor(white);
-      label.drawString("g", mixt.x+mixt.width*4.5, mixt.y+mixt.height);
+      label.drawString("g", mixt.x+mixt.width*4.5, mixt.y+mixt.height+12);
       
       ofSetColor(white);
       ofRect(mixt.x+mixt.width*5.3,mixt.y+mixt.height*.45,mixt.width*.4,mixt.height*.1);
       ofRect(mixt.x+mixt.width*5.45,mixt.y+mixt.height*.3,mixt.width*.1,mixt.height*.4);
       
-      ofSetColor(0,0,mix.b);
-      ofRect(mixt.x+mixt.width*6, mixt.y, mixt.width, mixt.height);
+      if(mix.b<20){
+        ofSetColor(0,0,255-mix.b);
+        ofRect(mixt.x+mixt.width*6, mixt.y, mixt.width, mixt.height);
+        ofSetColor(red);
+        ofRing(mixt.x+mixt.width*13/2,mixt.y+mixt.height/2,mixt.width*.707,mixt.width*.707+3);
+        ofSetLineWidth(3);
+        ofLine(mixt.x+mixt.width*7, mixt.y, mixt.x+mixt.width*6, mixt.y+mixt.height);
+        ofSetLineWidth(1);
+      }
+      else{
+        ofSetColor(0,0,255-mix.b);
+        ofRect(mixt.x+mixt.width*6, mixt.y, mixt.width, mixt.height);
+      }
       ofSetColor(white);
-      label.drawString("b", mixt.x+mixt.width*6.5, mixt.y+mixt.height);
+      label.drawString("b", mixt.x+mixt.width*6.5, mixt.y+mixt.height+12);
       label.setMode(OF_FONT_LEFT);
       
       ofPushStyle();
@@ -207,9 +218,9 @@ void demonstration::drawUnfold()
       ofEnableSmoothing();
       ofSetLineWidth(2);
       ofSetColor(white*.6);
-      ofLine(unfldPnt.x, unfldPnt.y+unfold.height,mixt.x-mixt.width/2, mixt.y-mixt.height/2+mixt.height*2);
+      ofLine(unfldPnt.x, unfldPnt.y+unfold.height,mixt.x-mixt.width/2, mixt.y-mixt.height/2+mixt.height*2+20);
       ofLine(unfldPnt.x+10, unfldPnt.y+unfold.height,mixt.x-mixt.width/2+mixt.width*8, mixt.y-mixt.height/2);
-      ofRect(mixt.x-mixt.width/2, mixt.y-mixt.height/2, mixt.width*8, mixt.height*2);
+      ofRect(mixt.x-mixt.width/2, mixt.y-mixt.height/2, mixt.width*8, mixt.height*2+20);
       ofPopStyle();
       
       ofSetColor(yellow);
